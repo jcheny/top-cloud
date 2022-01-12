@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: top-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: top-web
+  template:
+    metadata:
+      labels:
+        app: top-web
+    spec:
+      imagePullSecrets:
+        - name: sense-video
+      tolerations:
+        - effect: NoExecute
+          key: project
+          operator: Equal
+          value: sense-video
+      serviceAccount: {{ .Values.service_account }}
+      serviceAccountName: {{ .Values.service_account }}
+      containers:
+        - image: {{ .Values.top_web_image }}:{{ .Values.top_version }}
+          imagePullPolicy: Always
+          name: top-web
+          resources:
+            limits:
+              cpu: "1"
+              memory: 1Gi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: top-web
+  labels:
+    app: top-web
+spec:
+  type: ClusterIP
+  ports:
+    - port: 33000
+  selector:
+    app: top-web

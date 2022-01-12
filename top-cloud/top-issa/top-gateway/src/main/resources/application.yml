@@ -1,0 +1,35 @@
+server:
+  port: 32015
+spring:
+  application:
+    name: top-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true # admin-service ADMIN-SERVICE  /admin-service/** -> 微服务（ADMIN-SERVICE）
+    stream:
+      kafka:
+        binder:
+          replication-factor: 1
+      bindings:
+        SAVE_ROUTE: { destination: SAVE_ROUTE, content-type: application/json, group: ROUTE_GROUP_SAVE, consumer.maxAttemps: 1 }
+        UPDATE_ROUTE: { destination: UPDATE_ROUTE, content-type: application/json, group: ROUTE_GROUP_UPDATE, consumer.maxAttemps: 1 }
+        DELETE_ROUTE: { destination: DELETE_ROUTE, content-type: application/json, group: ROUTE_GROUP_DELETE, consumer.maxAttemps: 1 }
+
+top:
+  gateway:
+    ignore:
+      allowPaths:
+        - /social/oauth/render/**
+        - /social/oauth/callback/**
+        - /social/oauth/revoke/**
+        - /social/oauth/refresh/**
+        - /login
+        - /client/getClient
+        - /config/getConfig
+        - /sms/**
+        - /api/**
+        - /web/**
+        - /register

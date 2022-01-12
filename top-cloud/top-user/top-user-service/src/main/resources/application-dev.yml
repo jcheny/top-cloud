@@ -1,0 +1,21 @@
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ihave.top:8848
+        group: top-cloud
+  datasource:
+    url: jdbc:mysql://ihave.top:3306/top_app?useSSL=false&serverTimezon=GMT%28
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  # redis配置
+  redis:
+    host: ihave.top
+    port: 6379
+    password: FSF8WERS3NJVSDG
+
+logging:
+  level:
+    com:
+      ihave: debug

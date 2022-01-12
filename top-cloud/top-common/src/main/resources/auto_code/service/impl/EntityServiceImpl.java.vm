@@ -1,0 +1,18 @@
+package ${parentPack}.service.impl;
+
+import org.springframework.stereotype.Service;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import ${parentPack}.mapper.${tableInfo.javaTableName}Mapper;
+import ${parentPack}.entity.${tableInfo.javaTableName};
+import ${parentPack}.service.${tableInfo.javaTableName}Service;
+/**
+ * ${tableInfo.tableComment} ${tableInfo.javaTableName}Service
+ * @Title: ${tableInfo.javaTableName}Service.java
+ * @Package ${parentPack}.service
+ * @author ${author}_自动生成
+ * @date ${datetime}
+ **/
+@Service
+public class ${tableInfo.javaTableName}ServiceImpl extends ServiceImpl<${tableInfo.javaTableName}Mapper, ${tableInfo.javaTableName}> implements ${tableInfo.javaTableName}Service{
+
+}

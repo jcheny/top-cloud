@@ -1,0 +1,5 @@
+server:
+  port: 32014
+spring:
+  application:
+    name: top-authorization

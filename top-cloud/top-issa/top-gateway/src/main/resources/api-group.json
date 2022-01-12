@@ -1,0 +1,10 @@
+[
+  {
+    "apiName": "top-user-server",
+    "predicateltems": [
+      {
+        "pattern": "/user/list"
+      }
+    ]
+  }
+]

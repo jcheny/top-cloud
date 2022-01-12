@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ihave.mapper.UserMapper">
+  <resultMap id="BaseResultMap" type="com.ihave.entity.User">
+    <!--@mbg.generated-->
+    <!--@Table top_user-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="country_code" jdbcType="VARCHAR" property="countryCode" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="avatar" jdbcType="VARCHAR" property="avatar" />
+    <result column="birthday" jdbcType="VARCHAR" property="birthday" />
+    <result column="sex" jdbcType="BOOLEAN" property="sex" />
+    <result column="is_deleted" jdbcType="BOOLEAN" property="isDeleted" />
+    <result column="status" jdbcType="BOOLEAN" property="status" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_user" jdbcType="VARCHAR" property="updateUser" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, code, username, `password`, country_code, mobile, email, avatar, birthday, sex, 
+    is_deleted, `status`, create_time, create_user, update_time, update_user
+  </sql>
+    <select id="selectUser" resultType="com.ihave.vo.UserVo">
+      select a.*,b.role_id as roleId,c.name as roleName from top_user a left join top_user_role b on a.id = b.user_id left join top_role c on c.id = b.role_id
+        <where>
+          b.is_deleted = 0 and a.is_deleted = 0
+          <if test="username != null and username != ''">
+            and a.username like concat('%',#{username},'%')
+          </if>
+          <if test="mobile != null and mobile != ''">
+            and a.mobile like concat('%',#{mobile},'%')
+          </if>
+          <if test="email != null and email != ''">
+            and a.email like concat('%',#{email},'%')
+          </if>
+          <if test="status != null">
+            and a.status = #{status}
+          </if>
+          <if test="roleId != null and roleId != ''">
+            and b.role_id like concat('%',#{roleId},'%')
+          </if>
+        </where>
+        order by a.create_time desc
+    </select>
+  <select id="selectUserInfo" resultType="com.ihave.vo.UserVo">
+    select a.*,c.id as roleId,c.name as roleName from top_user a
+        left join top_user_role b on a.id = b.user_id
+        left join top_role c on b.role_id = c.id where a.id = #{userId}
+        and a.is_deleted = 0 and b.is_deleted = 0 and c.is_deleted = 0
+  </select>
+</mapper>

@@ -1,0 +1,48 @@
+package ${parentPack}.entity;
+
+import java.io.Serializable;
+
+import com.baomidou.mybatisplus.annotation.*;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
+import java.io.Serializable;
+import java.util.Date;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@TableName(value = "${tableInfo.tableName}")
+@ApiModel(value = "${tableInfo.tableComment}")
+public class ${tableInfo.javaTableName} implements Serializable{
+private static final long serialVersionUID=1L;
+
+#set($isdate = false)
+#foreach ($column in $beanColumns)
+    #if(${column.beanType} == "java.util.Date")
+
+        #set($isdate =true)
+    @ApiModelProperty(value = "$column.column_comment")
+    @TableField(value = "${column.column_name}")
+    private ${column.javaType} ${column.beanName};
+
+    #else
+        #if(${column.column_key} == "PRI")
+        @TableId(value = "${column.column_name}", type = IdType.ASSIGN_ID)
+        @ApiModelProperty(value = "$column.column_comment")
+        private ${column.javaType} ${column.beanName};
+
+        #else
+
+        @TableField(value = "`${column.column_name}`")
+        @ApiModelProperty(value = "$column.column_comment")
+        private ${column.javaType} ${column.beanName};
+        #end
+    #end
+#end
+
+}

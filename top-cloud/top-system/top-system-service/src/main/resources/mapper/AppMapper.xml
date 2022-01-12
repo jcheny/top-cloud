@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ihave.mapper.AppMapper">
+
+  <resultMap id="BaseResultMap" type="com.ihave.entity.App">
+          <result column="id" jdbcType="BIGINT" property="id" />
+          <result column="app_name" jdbcType="VARCHAR" property="appName" />
+          <result column="status" jdbcType="INTEGER" property="status" />
+          <result column="is_deleted" jdbcType="INTEGER" property="isDeleted" />
+          <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+          <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+      </resultMap>
+
+  <sql id="Base_Column_List">
+      `id`,
+        app_name,
+        `status`,
+        is_deleted,
+        create_time,
+        update_time
+    </sql>
+    <select id="selectAgreement" resultType="java.lang.String">
+        select ${agreementName} from stmobile_app where app_name = #{appName} and status = 0 and is_deleted = 0
+    </select>
+
+</mapper>

@@ -1,0 +1,14 @@
+package ${parentPack}.request;
+
+import ${parentPack}.entity.${tableInfo.javaTableName};
+import lombok.Data;
+
+import java.io.Serializable;
+
+@Data
+public class ${tableInfo.javaTableName}Request extends ${tableInfo.javaTableName} implements Serializable  {
+
+    private static final long serialVersionUID = 1L;
+
+
+}

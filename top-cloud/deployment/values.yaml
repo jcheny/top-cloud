@@ -1,0 +1,30 @@
+
+top_version: v0.1
+
+namespace: xxxx
+service_account: xxx
+
+profiles_active: test
+mysql_user: root
+mysql_password: xxxx
+mysql_database_url: jdbc:mysql://xxxx:3306/top_app?useUnicode=true&characterEncoding=UTF-8
+
+mysql_root_password: xxxx
+mysql_database: top_app
+driver_class_name: com.mysql.cj.jdbc.Driver
+
+redis_host: xxxx
+redis_password: xxx
+redis_database: 0
+
+kafka_server: xxxx
+
+top_authorization_image: xxxx/xxxx/top-authorization
+top_gateway_image: xxxx/xxxx/top-gateway
+top_system_service_image: xxxx/xxxx/top-system/top-system-service
+top_resources_service_image: xxxx/xxxx/top-resources/top-resources-service
+top_user_service_image: xxxx/xxxx/top-user/top-user-service
+top_member_service_image: xxxx/xxxx/top-member/top-member-service
+top_web_image: xxxx/xxxx/top-web
+
+

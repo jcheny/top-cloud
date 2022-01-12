@@ -1,0 +1,13 @@
+globalConfig:
+    #生成代码的父包
+    parentPack: com.ihave
+    #作者
+    author: CHENYU
+    #电子邮箱
+    email: jchen_px@126.com
+    #java在项目中的classpath位置
+    javaSource: src/main/java
+    #resource位置
+    resources: src/main/resources
+    #表前缀
+    tablePrefix: top_

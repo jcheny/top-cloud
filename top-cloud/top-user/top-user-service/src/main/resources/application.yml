@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: top-user
+
+server:
+  port: 32012
+
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
+
+swagger2:
+  basePackage: com.ihave.controller
+  name: top-cloud
+  url: https://www.ihave.top
+  email: jchen_px@126.com
+  title: top-cloud
+  description: top-cloud
+  version: V1.0.0
+
+feign:
+  httpclient:
+    connection-timeout: 8000

@@ -1,0 +1,28 @@
+package ${parentPack}.wrapper;
+
+import cn.hutool.core.bean.BeanUtil;
+import ${parentPack}.entity.${tableInfo.javaTableName};
+import ${parentPack}.request.${tableInfo.javaTableName}Request;
+import ${parentPack}.support.BaseEntityWrapper;
+import ${parentPack}.vo.${tableInfo.javaTableName}Vo;
+
+public class ${tableInfo.javaTableName}Wrapper extends BaseEntityWrapper<${tableInfo.javaTableName}, ${tableInfo.javaTableName}Vo> {
+
+
+	public static ${tableInfo.javaTableName}Wrapper build(){
+		return new ${tableInfo.javaTableName}Wrapper();
+	}
+
+	@Override
+	public ${tableInfo.javaTableName}Vo entityVO(${tableInfo.javaTableName} entity) {
+			${tableInfo.javaTableName}Vo vo = new ${tableInfo.javaTableName}Vo();
+		BeanUtil.copyProperties(entity,vo);
+		return vo;
+	}
+
+	public ${tableInfo.javaTableName} requestEntity(${tableInfo.javaTableName}Request request) {
+		${tableInfo.javaTableName} entity = new ${tableInfo.javaTableName}();
+		BeanUtil.copyProperties(request,entity);
+		return entity;
+	}
+}

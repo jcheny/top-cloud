@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ihave.mapper.AutoCodeMapper">
+
+  <resultMap id="BaseResultMap" type="com.ihave.entity.AutoCode">
+          <result column="id" jdbcType="BIGINT" property="id" />
+          <result column="table_name" jdbcType="VARCHAR" property="tableName" />
+          <result column="model_name" jdbcType="VARCHAR" property="modelName" />
+          <result column="gateway_name" jdbcType="VARCHAR" property="gatewayName" />
+          <result column="vue_name" jdbcType="VARCHAR" property="vueName" />
+          <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+      </resultMap>
+
+  <sql id="Base_Column_List">
+      id,
+        table_name,
+        model_name,
+        gateway_name,
+        vue_name,
+        create_time
+    </sql>
+   
+</mapper>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ihave.mapper.VersionUpgradeMapper">
+
+  <resultMap id="BaseResultMap" type="com.ihave.entity.VersionUpgrade">
+          <result column="id" jdbcType="SMALLINT" property="id" />
+          <result column="version_id" jdbcType="SMALLINT" property="versionId" />
+          <result column="version_mini" jdbcType="INTEGER" property="versionMini" />
+          <result column="version_code" jdbcType="VARCHAR" property="versionCode" />
+          <result column="type" jdbcType="TINYINT" property="type" />
+          <result column="apk_url" jdbcType="VARCHAR" property="apkUrl" />
+          <result column="upgrade_point" jdbcType="VARCHAR" property="upgradePoint" />
+          <result column="status" jdbcType="TINYINT" property="status" />
+          <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+          <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+      </resultMap>
+
+  <sql id="Base_Column_List">
+        id,
+        version_id,
+        version_mini,
+        version_code,
+        `type`,
+        apk_url,
+        upgrade_point,
+        `status`,
+        create_time,
+        update_time
+    </sql>
+    <select id="queryMaxVersion" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from stmobile_version_upgrade
+        <where>
+            is_deleted = 0
+            and  version_id = (select max(version_id) from stmobile_version_upgrade where is_deleted = 0)
+            and  version_mini =
+            (select max(version_mini) from stmobile_version_upgrade where  is_deleted = 0 and version_id = (select max(version_id) from stmobile_version_upgrade where is_deleted = 0))
+        </where>
+    </select>
+
+</mapper>

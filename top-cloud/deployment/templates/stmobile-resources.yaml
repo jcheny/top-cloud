@@ -1,0 +1,105 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: top-resources
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: top-resources
+  template:
+    metadata:
+      labels:
+        app: top-resources
+    spec:
+      imagePullSecrets:
+        - name: sense-video
+      tolerations:
+        - effect: NoExecute
+          key: project
+          operator: Equal
+          value: sense-video
+      serviceAccount: {{ .Values.service_account }}
+      serviceAccountName: {{ .Values.service_account }}
+      containers:
+        - image: {{ .Values.top_resources_service_image }}:{{ .Values.top_version }}
+          imagePullPolicy: Always
+          name: top-resources
+          resources:
+            limits:
+              cpu: "1"
+              memory: 2Gi
+          env:
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: top-config
+                  key: MYSQL_DATABASE_URL
+            - name: SPRING_DATASOURCE_DRIVER-CLASS-NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: top-config
+                  key: DRIVER_CLASS_NAME
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: top-config
+                  key: MYSQL_USER
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: top-config
+                  key: MYSQL_PASSWORD
+            - name: SPRING_REDIS_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: top-config
+                  key: REDIS_HOST
+            - name: SPRING_REDIS_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: top-config
+                  key: REDIS_PASSWORD
+            - name: SPRING_REDIS_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: top-config
+                  key: REDIS_DATABASE
+            - name: SPRING_PROFILES_ACTIVE
+              valueFrom:
+                configMapKeyRef:
+                  name: top-config
+                  key: PROFILES_ACTIVE
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: top-resources
+  labels:
+    app: top-resources
+spec:
+  type: ClusterIP
+  ports:
+    - port: 32013
+  selector:
+    app: top-resources
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: top-config
+data:
+  MYSQL_ROOT_PASSWORD: {{ .Values.mysql_root_password }}
+  MYSQL_USER: {{ .Values.mysql_user }}
+  MYSQL_PASSWORD: {{ .Values.mysql_password }}
+  MYSQL_DATABASE: {{ .Values.mysql_database }}
+  MYSQL_DATABASE_URL: {{ .Values.mysql_database_url }}
+  DRIVER_CLASS_NAME: {{ .Values.driver_class_name }}
+  REDIS_HOST: {{ .Values.redis_host }}
+  REDIS_PASSWORD: {{ .Values.redis_password }}
+  KAFKA_SERVER: {{ .Values.kafka_server }}
+  REDIS_DATABASE: "{{ .Values.redis_database }}"
+  PROFILES_ACTIVE: {{ .Values.profiles_active }}
+
+

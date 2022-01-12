@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="${parentPack}.mapper.${tableInfo.javaTableName}Mapper">
+
+  <resultMap id="BaseResultMap" type="${parentPack}.entity.${tableInfo.javaTableName}">
+    #foreach($column in $beanColumns)
+      <result column="${column.column_name}" jdbcType="${column.jdbcType}" property="${column.beanName}" />
+    #end
+  </resultMap>
+
+  <sql id="Base_Column_List">
+#set( $lag = 0)
+#foreach ($column in $beanColumns)
+  #if(($lag+1) >= (${beanColumns.size()}))
+    ${column.column_name}
+  #else
+    ${column.column_name},
+  #end
+  #set( $lag = ($lag + 1) )
+#end
+  </sql>
+   
+</mapper>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ihave.mapper.MemberOauthTokenMapper">
+
+  <resultMap id="BaseResultMap" type="com.ihave.entity.MemberOauthToken">
+          <result column="id" jdbcType="BIGINT" property="id" />
+          <result column="member_oauth_id" jdbcType="BIGINT" property="memberOauthId" />
+          <result column="access_token" jdbcType="VARCHAR" property="accessToken" />
+          <result column="expire_in" jdbcType="INTEGER" property="expireIn" />
+          <result column="refresh_token" jdbcType="VARCHAR" property="refreshToken" />
+          <result column="scope" jdbcType="VARCHAR" property="scope" />
+          <result column="source" jdbcType="VARCHAR" property="source" />
+          <result column="status" jdbcType="INTEGER" property="status" />
+          <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+          <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+      </resultMap>
+
+  <sql id="Base_Column_List">
+      id,
+        member_oauth_id,
+        access_token,
+        expire_in,
+        refresh_token,
+        scope,
+        source,
+        status,
+        create_time,
+        update_time
+    </sql>
+   
+</mapper>

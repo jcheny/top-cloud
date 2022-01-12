@@ -1,0 +1,15 @@
+package ${parentPack}.service;
+
+import ${parentPack}.entity.${tableInfo.javaTableName};
+import com.baomidou.mybatisplus.extension.service.IService;
+
+/**
+ * ${tableInfo.tableComment} ${tableInfo.javaTableName}Service
+ * @Title: ${tableInfo.javaTableName}Service.java
+ * @Package ${parentPack}.service
+ * @author ${author}_自动生成
+ * @date ${datetime}
+ **/
+public interface ${tableInfo.javaTableName}Service extends IService<${tableInfo.javaTableName}>{
+
+}

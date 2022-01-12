@@ -1,0 +1,33 @@
+import request from '@/utils/request'
+
+export function get${tableInfo.javaTableName}List(params) {
+    return request({
+        url: '/${gateWay}/${tableInfo.vueTableName}/page',
+        method: 'get',
+        params
+    })
+}
+
+export function save${tableInfo.javaTableName}(params) {
+    return request({
+        url: '/${gateWay}/${tableInfo.vueTableName}',
+        method: 'post',
+        data: params
+    })
+}
+
+export function update${tableInfo.javaTableName}(params) {
+    return request({
+        url: '/${gateWay}/${tableInfo.vueTableName}',
+        method: 'put',
+        data: params
+    })
+}
+
+export function delete${tableInfo.javaTableName}(params) {
+    return request({
+        url: '/${gateWay}/${tableInfo.vueTableName}',
+        method: 'delete',
+        data: params
+    })
+}

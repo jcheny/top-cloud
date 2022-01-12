@@ -1,0 +1,14 @@
+[
+  {
+    "resource":"top-user",
+    "resourceMode":0,
+    "count":2000,
+    "intervalSec":10
+  },
+  {
+    "resource":"top-user",
+    "resourceMode":1,
+    "count":2000,
+    "intervalSec":10
+  }
+]

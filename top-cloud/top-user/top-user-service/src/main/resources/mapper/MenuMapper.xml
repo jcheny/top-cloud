@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ihave.mapper.MenuMapper">
+
+  <resultMap id="BaseResultMap" type="com.ihave.entity.Menu">
+          <result column="id" jdbcType="BIGINT" property="id" />
+          <result column="parent_id" jdbcType="BIGINT" property="parentId" />
+          <result column="parent_key" jdbcType="VARCHAR" property="parentKey" />
+          <result column="type" jdbcType="TINYINT" property="type" />
+          <result column="name" jdbcType="VARCHAR" property="name" />
+          <result column="desc" jdbcType="VARCHAR" property="desc" />
+          <result column="target_url" jdbcType="VARCHAR" property="targetUrl" />
+          <result column="sort" jdbcType="INTEGER" property="sort" />
+          <result column="status" jdbcType="TINYINT" property="status" />
+          <result column="create_user" jdbcType="BIGINT" property="createUser" />
+          <result column="update_user" jdbcType="BIGINT" property="updateUser" />
+          <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+          <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+      </resultMap>
+
+  <sql id="Base_Column_List">
+      top_menu.id,
+        top_menu.parent_id,
+        top_menu.key,
+        top_menu.`type`,
+        top_menu.`name`,
+        top_menu.`desc`,
+        top_menu.target_url,
+        top_menu.`sort`,
+        top_menu.`status`,
+        top_menu.create_user,
+        top_menu.update_user,
+        top_menu.create_time,
+        top_menu.update_time
+    </sql>
+    <select id="selectUserTree" resultType="com.ihave.entity.Menu">
+        select a.id,
+               a.parent_id,
+               a.`key`,
+               a.`type`,
+               a.`name`,
+               a.`desc`,
+               a.target_url,
+               a.shows,
+               a.icon,
+               a.`sort`,
+               a.`status`,
+               a.create_user,
+               a.update_user,
+               a.create_time,
+               a.update_time
+        from top_menu a
+        left join top_role_menu b on a.id = b.menu_id
+        left join top_user_role c on b.role_id = c.role_id
+        left join top_user d on c.user_id = d.id
+        where d.id = #{principal} and   c.is_deleted = 0 and d.is_deleted =0 and a.shows = 0
+        order by a.sort desc
+    </select>
+
+</mapper>

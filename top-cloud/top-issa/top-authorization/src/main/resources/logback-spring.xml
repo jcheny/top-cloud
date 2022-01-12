@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- dev文件路径 -->
+    <property name="DEV_FILE_PATH" value="/Users/chenyu/logs/containers" />
+
+    <!-- test文件路径 -->
+    <property name="TEST_FILE_PATH" value="/var/log/containers" />
+    <!-- pro文件路径 -->
+    <property name="PROD_FILE_PATH" value="/var/log/containers" />
+    <springProperty scope="context" name="LOG_NAME" source="spring.application.name" defaultValue="application"/>
+
+    <!-- 文件输出格式 -->
+    <property name="CONSOLE_LOG_PATTERN"
+              value="${LOG_NAME}|%d{yyyy/MM/dd HH:mm:ss S}|%highlight(%level)|%yellow(%thread)|%green(%logger)|%blue(%method)|%line|%msg%n"/>
+
+
+    <!-- 开发环境 -->
+    <springProfile name="dev">
+
+        <!-- 每天产生一个文件 -->
+        <appender name="DEV_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>${DEV_FILE_PATH}${file.separator}${LOG_NAME}.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <!-- rollover daily -->
+                <fileNamePattern>${DEV_FILE_PATH}${file.separator}${LOG_NAME}-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+                <!-- each file should be at most 100MB, keep 60 days worth of history, but at most 20GB -->
+                <maxHistory>7</maxHistory>
+                <maxFileSize>100MB</maxFileSize>
+                <totalSizeCap>20GB</totalSizeCap>
+            </rollingPolicy>
+            <encoder>
+                <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+                <charset>UTF-8</charset>
+            </encoder>
+        </appender>
+
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            </encoder>
+        </appender>
+        <root level="info">
+            <appender-ref ref="DEV_FILE" />
+            <appender-ref ref="CONSOLE" />
+        </root>
+    </springProfile>
+
+    <!-- 测试环境 -->
+    <springProfile name="test">
+        <!-- 每天产生一个文件 -->
+        <appender name="TEST_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>${TEST_FILE_PATH}${file.separator}${LOG_NAME}.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <!-- rollover daily -->
+                <fileNamePattern>${TEST_FILE_PATH}${file.separator}${LOG_NAME}-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+                <!-- each file should be at most 100MB, keep 60 days worth of history, but at most 20GB -->
+                <maxHistory>7</maxHistory>
+                <maxFileSize>100MB</maxFileSize>
+                <totalSizeCap>20GB</totalSizeCap>
+            </rollingPolicy>
+            <encoder>
+                <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+                <charset>UTF-8</charset>
+            </encoder>
+        </appender>
+        <root level="info">
+            <appender-ref ref="TEST_FILE" />
+        </root>
+    </springProfile>
+
+    <!-- 生产环境 -->
+    <springProfile name="prod">
+        <appender name="PROD_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>${PROD_FILE_PATH}${file.separator}${LOG_NAME}.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <!-- rollover daily -->
+                <fileNamePattern>${PROD_FILE_PATH}${file.separator}${LOG_NAME}-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+                <!-- each file should be at most 100MB, keep 60 days worth of history, but at most 20GB -->
+                <maxHistory>7</maxHistory>
+                <maxFileSize>100MB</maxFileSize>
+                <totalSizeCap>20GB</totalSizeCap>
+            </rollingPolicy>
+            <encoder>
+                <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+                <charset>UTF-8</charset>
+            </encoder>
+        </appender>
+        <root level="debug">
+            <appender-ref ref="PROD_FILE" />
+        </root>
+    </springProfile>
+</configuration>

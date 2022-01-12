@@ -1,0 +1,16 @@
+package ${parentPack}.mapper;
+
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import ${parentPack}.entity.${tableInfo.javaTableName};
+
+
+/**
+ * ${tableInfo.tableComment} ${tableInfo.javaTableName}Mapper
+ * @author ${author}_自动生成
+ * @email ${email}
+ * @date ${datetime}
+ */
+public interface ${tableInfo.javaTableName}Mapper extends BaseMapper<${tableInfo.javaTableName}>{
+
+  	
+}

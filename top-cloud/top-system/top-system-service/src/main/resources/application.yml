@@ -1,0 +1,57 @@
+server:
+  port: 32011
+spring:
+  cloud:
+    alicloud:
+      access-key: xxxx
+      secret-key: xxxx
+      oss:
+        endpoint: oss-cn-hangzhou.aliyuncs.com
+        bucketName: xxxx
+      roleArn: acs:ram::1350000000000:role/xxxx
+      stsEndPoint: sts.cn-hangzhou.aliyuncs.com
+      validTime: 2592000000
+  application:
+    name: top-system
+
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
+
+feign:
+  httpclient:
+    connection-timeout: 8000
+
+swagger2:
+  basePackage: com.ihave.controller
+  name: top-cloud
+  url: https://www.ihave.top
+  email: jchen_px@126.com
+  title: top-cloud
+  description: top-cloud
+  version: V1.0.0
+
+social:
+  enabled: true
+  domain: http://127.0.0.1:${server.port}
+  oauth:
+    GITHUB:
+      client-id: cb5************************************
+      client-secret: 0dc************************************
+      redirect-uri: ${social.domain}/social/oauth/callback/github
+    GITEE:
+      client-id: 016************
+      client-secret: b4f************************************
+      redirect-uri: ${social.domain}/social/oauth/callback/gitee
+    WECHAT_OPEN:
+      client-id: 233************
+      client-secret: 233************************************
+      redirect-uri: ${social.domain}/oauth/redirect/wechat
+    QQ:
+      client-id: 233************
+      client-secret: 233************************************
+      redirect-uri: ${social.domain}/oauth/redirect/qq
+    DINGTALK:
+      client-id: 233************
+      client-secret: 233************************************
+      redirect-uri: ${social.domain}/oauth/redirect/dingtalk
+

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ihave.mapper.MemberOauthMapper">
+
+  <resultMap id="BaseResultMap" type="com.ihave.entity.MemberOauth">
+          <result column="id" jdbcType="BIGINT" property="id" />
+          <result column="uuid" jdbcType="VARCHAR" property="uuid" />
+          <result column="member_id" jdbcType="BIGINT" property="memberId" />
+          <result column="username" jdbcType="VARCHAR" property="username" />
+          <result column="nickname" jdbcType="VARCHAR" property="nickname" />
+          <result column="avatar" jdbcType="VARCHAR" property="avatar" />
+          <result column="blog" jdbcType="VARCHAR" property="blog" />
+          <result column="company" jdbcType="VARCHAR" property="company" />
+          <result column="location" jdbcType="VARCHAR" property="location" />
+          <result column="email" jdbcType="VARCHAR" property="email" />
+          <result column="remark" jdbcType="VARCHAR" property="remark" />
+          <result column="gender" jdbcType="VARCHAR" property="gender" />
+          <result column="source" jdbcType="VARCHAR" property="source" />
+          <result column="is_deleted" jdbcType="TINYINT" property="isDeleted" />
+          <result column="status" jdbcType="TINYINT" property="status" />
+          <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+          <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+      </resultMap>
+
+  <sql id="Base_Column_List">
+      id,
+        uuid,
+        member_id,
+        username,
+        nickname,
+        avatar,
+        blog,
+        company,
+        location,
+        email,
+        remark,
+        gender,
+        source,
+        is_deleted,
+        status,
+        create_time,
+        update_time
+    </sql>
+   
+</mapper>

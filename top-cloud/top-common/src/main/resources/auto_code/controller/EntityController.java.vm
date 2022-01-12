@@ -1,0 +1,84 @@
+package ${parentPack}.controller;
+
+import ${parentPack}.api.R;
+import ${parentPack}.entity.${tableInfo.javaTableName};
+import ${parentPack}.request.${tableInfo.javaTableName}Request;
+import ${parentPack}.service.${tableInfo.javaTableName}Service;
+import ${parentPack}.utils.ParamUtil;
+import ${parentPack}.vo.${tableInfo.javaTableName}Vo;
+import ${parentPack}.wrapper.${tableInfo.javaTableName}Wrapper;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+
+import java.util.List;
+
+/**
+ * ${tableInfo.tableComment}Controller
+ * @ClassName: ${tableInfo.javaTableName}Controller
+ * @author ${author}
+ * @date ${datetime}
+ */
+@Api(tags = "${tableInfo.tableComment}")
+@RestController
+@RequestMapping("/${tableInfo.javaTableName}")
+public class ${tableInfo.javaTableName}Controller{
+
+	
+	@Autowired
+	private ${tableInfo.javaTableName}Service ${tableInfo.javaTableName_a}Service;
+	
+	
+	/**
+	 * ${tableInfo.tableComment}页面展示
+	 * @param page
+	 * @return String
+	 * @author ${author}
+	 */
+	@ApiOperation(value = "分页查询", notes = "分页查询")
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "current", value = "当前页数", paramType = "query", dataType = "int", example = "1"),
+			@ApiImplicitParam(name = "size", value = "每页条数", paramType = "query", dataType = "int", example = "10")
+	})
+	@GetMapping("/page")
+    public R<IPage<${tableInfo.javaTableName}Vo>> page(@ApiIgnore Page<${tableInfo.javaTableName}> page)
+    {
+		Page<${tableInfo.javaTableName}> pageList = ${tableInfo.javaTableName_a}Service.page(page, new LambdaQueryWrapper<${tableInfo.javaTableName}>()
+				.orderByDesc(${tableInfo.javaTableName}::getCreateTime)
+		);
+		return R.data(${tableInfo.javaTableName}Wrapper.build().pageVO(pageList));
+    }
+
+	@GetMapping("/{id}")
+	@ApiOperation(value = "根据id获取", notes = "id")
+	public R<${tableInfo.javaTableName}> getOne(@PathVariable(value = "id") Long id) {
+		return R.data(${tableInfo.javaTableName_a}Service.getById(id));
+	}
+
+	@PostMapping
+	@ApiOperation(value = "新增", notes = "实体")
+	public R save(@RequestBody ${tableInfo.javaTableName}Request request) {
+		return R.status(${tableInfo.javaTableName_a}Service.save(${tableInfo.javaTableName}Wrapper.build().requestEntity(request)));
+	}
+
+	@PutMapping
+	@ApiOperation(value = "修改", notes = "实体")
+	public R update(@RequestBody ${tableInfo.javaTableName}Request request) {
+		return R.status(${tableInfo.javaTableName_a}Service.updateById(${tableInfo.javaTableName}Wrapper.build().requestEntity(request)));
+	}
+
+	@DeleteMapping
+	@ApiImplicitParam(name = "ids", value = "ids", paramType = "query", dataType = "Long")
+	@ApiOperation(value = "删除", notes = "ids")
+	public R delete(@ApiIgnore @RequestBody List<Long> ids) {
+		ParamUtil.checkNull(ids,"id不能为空");
+		return R.status(${tableInfo.javaTableName_a}Service.removeByIds(ids));
+	}
+}

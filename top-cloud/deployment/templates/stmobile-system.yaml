@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: top-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: top-system
+  template:
+    metadata:
+      labels:
+        app: top-system
+    spec:
+      imagePullSecrets:
+        - name: sense-video
+      tolerations:
+        - effect: NoExecute
+          key: project
+          operator: Equal
+          value: sense-video
+      serviceAccount: {{ .Values.service_account }}
+      serviceAccountName: {{ .Values.service_account }}
+      containers:
+        - image: {{ .Values.top_system_service_image }}:{{ .Values.top_version }}
+          imagePullPolicy: Always
+          name: top-system
+          resources:
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          env:
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: top-config
+                  key: MYSQL_DATABASE_URL
+            - name: SPRING_DATASOURCE_DRIVER-CLASS-NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: top-config
+                  key: DRIVER_CLASS_NAME
+            - name: SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS
+              valueFrom:
+                configMapKeyRef:
+                  name: top-config
+                  key: KAFKA_SERVER
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: top-config
+                  key: MYSQL_USER
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: top-config
+                  key: MYSQL_PASSWORD
+            - name: SPRING_REDIS_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: top-config
+                  key: REDIS_HOST
+            - name: SPRING_REDIS_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: top-config
+                  key: REDIS_PASSWORD
+            - name: SPRING_REDIS_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: top-config
+                  key: REDIS_DATABASE
+            - name: SPRING_PROFILES_ACTIVE
+              valueFrom:
+                configMapKeyRef:
+                  name: top-config
+                  key: PROFILES_ACTIVE
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: top-system
+  labels:
+    app: top-system
+spec:
+  type: ClusterIP
+  ports:
+    - port: 32011
+  selector:
+    app: top-system

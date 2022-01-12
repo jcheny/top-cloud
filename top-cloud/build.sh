@@ -4,24 +4,21 @@ if [ -n "$1" ]; then
     version=$1
 fi
 echo "镜像版本号：" $version
-current_context=`kubectl config current-context`
+#current_context=`kubectl config current-context`
 echo "kubectl config:"current_context
 
-warehouse="xxxx"
-warehouse_title="xxxx"
+warehouse="1633182434"
 
 echo "镜像仓库"$warehouse
-echo "仓库内项目名"$warehouse_title
 
 local="$(pwd)"
 echo "本地目录："$local
 
-authorization="top-authorization"
-gateway="top-gateway"
-system="top-system/top-system-service"
-resources="top-resources/top-resources-service"
-user="top-user/top-user-service"
-member="top-member/top-member-service"
+authorization="top-issa/top-authorization"
+gateway="top-issa/top-gateway"
+system="top-issa/top-system/top-system-service"
+user="top-issa/top-user/top-user-service"
+member="top-issa/top-member/top-member-service"
 
 
 baseList="src/main"
@@ -55,8 +52,7 @@ cp $authorization/$baseList/resources/coinexchange.jks $authorization/target/doc
 cp $authorization/target/*.jar $authorization/target/docker
 cd $authorization/target/docker
 pwd
-docker rmi $authorization
-}:$version
+docker rmi $authorization:$version
 docker build -t $authorization:$version .
 cd $local
 
@@ -78,15 +74,6 @@ docker rmi $system:$version
 docker build -t $system:$version .
 cd $local
 
-mkdir -p $resources/target/docker
-cp $resources/$baseList/docker/Dockerfile $resources/target/docker
-cp $resources/target/*.jar $resources/target/docker
-cd $resources/target/docker
-pwd
-docker rmi $resources:$version
-docker build -t $resources:$version .
-cd $local
-
 mkdir -p $user/target/docker
 cp $user/$baseList/docker/Dockerfile $user/target/docker
 cp $user/target/*.jar $user/target/docker
@@ -106,35 +93,31 @@ docker build -t $member:$version .
 cd $local
 echo ******************镜像打包成功*********************
 echo ******************推送镜像*********************
-docker tag $authorization:$version $warehouse/$warehouse_title/$authorization:$version
-docker tag $gateway:$version $warehouse/$warehouse_title/$gateway:$version
-docker tag $system:$version $warehouse/$warehouse_title/$system:$version
-docker tag $resources:$version $warehouse/$warehouse_title/$resources:$version
-docker tag $user:$version $warehouse/$warehouse_title/$user:$version
-docker tag $member:$version $warehouse/$warehouse_title/$member:$version
+docker tag $authorization:$version $warehouse/top-authorization:$version
+docker tag $gateway:$version $warehouse/top-gateway:$version
+docker tag $system:$version $warehouse/top-system:$version
+docker tag $user:$version $warehouse/top-user:$version
+docker tag $member:$version $warehouse/top-member:$version
 
 
-docker push $warehouse/$warehouse_title/$authorization:$version
-docker push $warehouse/$warehouse_title/$gateway:$version
-docker push $warehouse/$warehouse_title/$system:$version
-docker push $warehouse/$warehouse_title/$resources:$version
-docker push $warehouse/$warehouse_title/$user:$version
-docker push $warehouse/$warehouse_title/$member:$version
+docker push $warehouse/top-authorization:$version
+docker push $warehouse/top-gateway:$version
+docker push $warehouse/top-system:$version
+docker push $warehouse/top-user:$version
+docker push $warehouse/top-member:$version
 echo ******************推送镜像OK*********************
 
 docker rmi $authorization:$version
 docker rmi $gateway:$version
 docker rmi $system:$version
-docker rmi $resources:$version
 docker rmi $user:$version
 docker rmi $member:$version
 
-docker rmi $warehouse/$warehouse_title/$authorization:$version
-docker rmi $warehouse/$warehouse_title/$gateway:$version
-docker rmi $warehouse/$warehouse_title/$system:$version
-docker rmi $warehouse/$warehouse_title/$resources:$version
-docker rmi $warehouse/$warehouse_title/$user:$version
-docker rmi $warehouse/$warehouse_title/$member:$version
+docker rmi $warehouse/top-authorization:$version
+docker rmi $warehouse/top-gateway:$version
+docker rmi $warehouse/top-system:$version
+docker rmi $warehouse/top-user:$version
+docker rmi $warehouse/top-member:$version
 
 echo ******************helm uninstall*********************
 #

@@ -16,9 +16,9 @@ echo "本地目录："$local
 
 authorization="top-issa/top-authorization"
 gateway="top-issa/top-gateway"
-system="top-issa/top-system/top-system-service"
-user="top-issa/top-user/top-user-service"
-member="top-issa/top-member/top-member-service"
+system="top-system/top-system-service"
+user="top-user/top-user-service"
+member="top-member/top-member-service"
 
 
 baseList="src/main"

@@ -58,6 +58,8 @@ cd $local
 
 mkdir -p $gateway/target/docker
 cp $gateway/$baseList/docker/Dockerfile $gateway/target/docker
+cp $gateway/$baseList/resources/api-group.json $gateway/target/docker
+cp $gateway/$baseList/resources/gw-flow.json $gateway/target/docker
 cp $gateway/target/*.jar $gateway/target/docker
 cd $gateway/target/docker
 pwd

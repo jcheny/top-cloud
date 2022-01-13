@@ -97,7 +97,7 @@ public class FileController {
         } catch (InvalidDataException e) {
             e.printStackTrace();
         }
-        boolean delete = fileX.delete();
+        fileX.delete();
         return R.data(map);
     }
 
@@ -226,7 +226,6 @@ public class FileController {
     @GetMapping("/getPolicy")
     @ApiOperation(value = "获取一个上传的票据")
     public R<Object> asyncUpload() {
-        String dir = DateUtil.today().replaceAll("-", "/");
         // 自定义角色会话名称，用来区分不同的令牌，例如可填写为SessionTest。
         String roleSessionName = "sessionFile";
         try {
@@ -253,7 +252,7 @@ public class FileController {
             map.put("active", active);
             return R.data(map);
         } catch (ClientException e) {
-            log.error("Failed：");
+            log.error("Failed:");
             log.error("Error code: " + e.getErrCode());
             log.error("Error message: " + e.getErrMsg());
             log.error("RequestId: " + e.getRequestId());

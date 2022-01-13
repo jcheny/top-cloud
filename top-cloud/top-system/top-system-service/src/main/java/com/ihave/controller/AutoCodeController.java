@@ -84,20 +84,20 @@ public class AutoCodeController{
 
 	@PostMapping
 	@ApiOperation(value = "新增", notes = "实体")
-	public R save(@RequestBody AutoCodeRequest request) {
+	public R<Object> save(@RequestBody AutoCodeRequest request) {
 		return R.status(autoCodeService.save(AutoCodeWrapper.build().requestEntity(request)));
 	}
 
 	@PutMapping
 	@ApiOperation(value = "修改", notes = "实体")
-	public R update(@RequestBody AutoCodeRequest request) {
+	public R<Object> update(@RequestBody AutoCodeRequest request) {
 		return R.status(autoCodeService.updateById(AutoCodeWrapper.build().requestEntity(request)));
 	}
 
 	@DeleteMapping
 	@ApiImplicitParam(name = "ids", value = "ids", paramType = "query", dataType = "Long")
 	@ApiOperation(value = "删除", notes = "ids")
-	public R delete(@ApiIgnore @RequestBody List<Long> ids) {
+	public R<Object> delete(@ApiIgnore @RequestBody List<Long> ids) {
 		ParamUtil.checkNull(ids,"id不能为空");
 		return R.status(autoCodeService.removeByIds(ids));
 	}

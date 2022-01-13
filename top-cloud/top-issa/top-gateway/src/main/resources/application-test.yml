@@ -1,0 +1,41 @@
+spring:
+  datasource:
+    url: jdbc:mysql://mysql-server:3306/top_app?useSSL=false&serverTimezon=GMT%28
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  redis:
+    host: redis-server
+    port: 6379
+#    password: 126163
+    password: FSF8WERS3NJVSDG
+  cloud:
+    # mq的相关配置
+    stream:
+      kafka:
+        binder:
+          brokers: kafka-server:9092
+    nacos:
+      discovery:
+        server-addr: nacos-server:8848 # 修改本机的host 文件
+        group: top-cloud
+    sentinel:
+      transport:
+        #        dashboard: sentinel-server:8858  # sentinel-dashboard 放在ecs 里面
+        dashboard: sentinel-server:8858  # sentinel-dashboard 放在ecs 里面
+      datasource:
+        ds1.file:
+          file: classpath:gw-flow.json  # 网关 + API分组的限流
+          ruleType: gw_flow
+#        ds1.nacos: #com.alibaba.csp.sentinel.datasource.nacos.NacosDataSource 使用Nacos持久化我的sentinel 数据时，需要添加nacos-datasource的依赖
+#          serverAddr: nacos-server:8848
+#          dataId: gw-flow
+#          ruleType: gw_flow
+
+        ds2.file:
+          file: classpath:api-group.json
+          ruleType: gw_api_group
+#        ds2.nacos:
+#          serverAddr: nacos-server:8848
+#          dataId: api-group
+#          ruleType: gw_api_group # 我们演示了sentinel-dashboard 的规则的定义，而且规则定义好了后，我们的网关能立马的感知到（生效）（nacos无法感知），但是我们下次重启，会丢失规则。--》nacos

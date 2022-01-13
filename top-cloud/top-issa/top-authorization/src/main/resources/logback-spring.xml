@@ -63,7 +63,13 @@
                 <charset>UTF-8</charset>
             </encoder>
         </appender>
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            </encoder>
+        </appender>
         <root level="info">
+            <appender-ref ref="CONSOLE" />
             <appender-ref ref="TEST_FILE" />
         </root>
     </springProfile>

@@ -1,6 +1,8 @@
 # top-cloud
 一个基于springcloud + vue 的后台项目，包含自动生成代码的功能，使用比市面上的操作起来非常的简单，适用于毕业项目设计的首选项目，新手操作也非常友好，集成的技术也是市面上常用的技术
 
+下载必看文档：https://www.yuque.com/docs/share/fcf85dad-21d4-476a-8bd3-1cb307b85b31?# 《top-cloud》
+
 # 后端部分
 下载项目直接导入idea工具中等待下载依赖
 直接启动即可，我使用的都是我自己的外网环境（nacos、mysql、redis），后面我会把这些去除

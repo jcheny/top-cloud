@@ -26,7 +26,7 @@ private static final long serialVersionUID=1L;
     #if(${column.beanType} == "java.util.Date")
 
         #set($isdate =true)
-    @ApiModelProperty(value = "$column.column_comment")
+    @ApiModelProperty(value = "${column.column_comment}")
     @TableField(value = "${column.column_name}")
     private ${column.javaType} ${column.beanName};
 

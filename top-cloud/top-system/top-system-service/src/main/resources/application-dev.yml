@@ -4,6 +4,10 @@ spring:
       discovery:
         server-addr: nacos-server:8848
         group: top-cloud
+    stream:
+      kafka:
+        binder:
+          brokers: kafka-server:9092
   datasource:
     url: jdbc:mysql://mysql-server:3306/top_app?useSSL=false&serverTimezon=GMT%28
     username: root

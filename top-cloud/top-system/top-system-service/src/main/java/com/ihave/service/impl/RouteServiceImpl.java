@@ -44,6 +44,7 @@ public class RouteServiceImpl extends ServiceImpl<RouteMapper, Route> implements
         route.setFilters("1");
         try {
             routeMapper.insert(route);
+            senderService.addRoute(route);
             return route;
         } catch (Exception e) {
             throw new ApiException(e);
@@ -116,7 +117,7 @@ public class RouteServiceImpl extends ServiceImpl<RouteMapper, Route> implements
                 extracted(routeId);
                 routeMapper.delete(new QueryWrapper<Route>()
                         .eq("route_id", routeId));
-//                senderService.deleteRoute(routeId);
+                senderService.deleteRoute(routeId);
             }
             return true;
         } catch (Exception e) {

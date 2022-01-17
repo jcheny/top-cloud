@@ -10,7 +10,7 @@ export function getGatewayRoutesList(params) {
 
 export function saveGatewayRoutes(params) {
     return request({
-        url: '/system/gatewayRoutes',
+        url: '/system/route',
         method: 'post',
         data: params
     })
@@ -18,7 +18,7 @@ export function saveGatewayRoutes(params) {
 
 export function updateGatewayRoutes(params) {
     return request({
-        url: '/system/gatewayRoutes',
+        url: '/system/route',
         method: 'put',
         data: params
     })
@@ -26,7 +26,7 @@ export function updateGatewayRoutes(params) {
 
 export function deleteGatewayRoutes(params) {
     return request({
-        url: '/system/gatewayRoutes',
+        url: '/system/route',
         method: 'delete',
         data: params
     })

@@ -7,7 +7,6 @@ spring:
   redis:
     host: redis-server
     port: 6379
-#    password: 126163
     password: FSF8WERS3NJVSDG
   cloud:
     # mq的相关配置
@@ -21,7 +20,6 @@ spring:
         group: top-cloud
     sentinel:
       transport:
-        #        dashboard: sentinel-server:8858  # sentinel-dashboard 放在ecs 里面
         dashboard: sentinel-server:8858  # sentinel-dashboard 放在ecs 里面
       datasource:
         ds1.file:

@@ -1,16 +1,17 @@
 package com.ihave;
 
-//import com.sensemobile.service.MySource;
+
+import com.ihave.service.MySource;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
-//import org.springframework.cloud.stream.annotation.EnableBinding;
+import org.springframework.cloud.stream.annotation.EnableBinding;
 
 @SpringBootApplication
 @EnableDiscoveryClient
 @EnableFeignClients
-//@EnableBinding({MySource.class})
+@EnableBinding({MySource.class})
 public class SystemServiceApplication {
 
     public static void main(String[] args) {

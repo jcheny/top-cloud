@@ -11,13 +11,6 @@
           clearable
         />
       </el-form-item>
-      <el-form-item label="路由执行顺序">
-        <el-input
-          v-model="listQuery.routeOrder"
-          placeholder="路由执行顺序"
-          clearable
-        />
-      </el-form-item>
       <el-form-item label="访问路径">
         <el-input
           v-model="listQuery.predicates"
@@ -25,25 +18,35 @@
           clearable
         />
       </el-form-item>
-      <el-form-item label="过滤">
-        <el-input v-model="listQuery.filters" placeholder="过滤" clearable />
-      </el-form-item>
       <el-form-item label="是否统计">
-        <el-input
-          v-model="listQuery.isStatistic"
-          placeholder="是否统计"
-          clearable
-        />
+        <el-select v-model="listQuery.isStatistic" placeholder="是否可用" clearable>
+          <el-option
+            v-for="item in booStatusMap"
+            :key="item.code"
+            :label="item.message"
+            :value="item.code"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="是否计费">
-        <el-input
-          v-model="listQuery.isBilling"
-          placeholder="是否计费"
-          clearable
-        />
+        <el-select v-model="listQuery.isBilling" placeholder="是否计费" clearable>
+          <el-option
+            v-for="item in booStatusMap"
+            :key="item.code"
+            :label="item.message"
+            :value="item.code"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="是否启用">
-        <el-input v-model="listQuery.isEbl" placeholder="是否启用" clearable />
+        <el-select v-model="listQuery.isEbl" placeholder="是否可用" clearable>
+          <el-option
+            v-for="item in statusMap"
+            :key="item.code"
+            :label="item.message"
+            :value="item.code"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="fetchData">查询</el-button>
@@ -71,39 +74,30 @@
           {{ scope.row.routeUri }}
         </template>
       </el-table-column>
-      <el-table-column label="路由执行顺序" align="center">
-        <template slot-scope="scope">
-          {{ scope.row.routeOrder }}
-        </template>
-      </el-table-column>
       <el-table-column label="访问路径" align="center">
         <template slot-scope="scope">
           {{ scope.row.predicates }}
         </template>
       </el-table-column>
-      <el-table-column label="过滤" align="center">
-        <template slot-scope="scope">
-          {{ scope.row.filters }}
-        </template>
-      </el-table-column>
       <el-table-column label="是否统计" align="center">
         <template slot-scope="scope">
-          {{ scope.row.isStatistic }}
+          <el-tag :type="scope.row.isStatistic | booFilter">
+            {{ scope.row.isStatistic | booStatusMapFilter }}
+          </el-tag>
         </template>
       </el-table-column>
       <el-table-column label="是否计费" align="center">
         <template slot-scope="scope">
-          {{ scope.row.isBilling }}
+          <el-tag :type="scope.row.isBilling | booFilter">
+            {{ scope.row.isBilling | booStatusMapFilter }}
+          </el-tag>
         </template>
       </el-table-column>
       <el-table-column label="是否启用" align="center">
         <template slot-scope="scope">
-          {{ scope.row.isEbl }}
-        </template>
-      </el-table-column>
-      <el-table-column label="创建时间" align="center">
-        <template slot-scope="scope">
-          {{ scope.row.createTime }}
+          <el-tag :type="scope.row.isEbl | statusFilter">
+            {{ scope.row.isEbl | statusTextFilter }}
+          </el-tag>
         </template>
       </el-table-column>
       <el-table-column label="更新时间" align="center">
@@ -113,8 +107,10 @@
       </el-table-column>
       <el-table-column align="center" label="操作">
         <template slot-scope="scope">
-          <el-button type="primary" @click="handleEdit(scope)">编辑</el-button>
-          <el-button type="danger" @click="handleDelete(scope)">删除</el-button>
+          <el-button v-if="scope.row.isEbl === 1" type="text" icon="el-icon-top" @click="operline(scope)">上线</el-button>
+          <el-button v-if="scope.row.isEbl === 0" type="text" icon="el-icon-bottom" @click="operline(scope)">下线</el-button>
+          <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope)">编辑</el-button>
+          <el-button type="text" icon="el-icon-delete-solid" @click="handleDelete(scope)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -134,14 +130,9 @@
             v-model="putInfo.routeUri"
             placeholder="转发目标uri"
             clearable
-          />
-        </el-form-item>
-        <el-form-item label="路由执行顺序">
-          <el-input
-            v-model="putInfo.routeOrder"
-            placeholder="路由执行顺序"
-            clearable
-          />
+          >
+            <template slot="prepend">lb://</template>
+          </el-input>
         </el-form-item>
         <el-form-item label="访问路径">
           <el-input
@@ -150,25 +141,25 @@
             clearable
           />
         </el-form-item>
-        <el-form-item label="过滤">
-          <el-input v-model="putInfo.filters" placeholder="过滤" clearable />
-        </el-form-item>
         <el-form-item label="是否统计">
-          <el-input
-            v-model="putInfo.isStatistic"
-            placeholder="是否统计"
-            clearable
-          />
+          <el-select v-model="putInfo.isStatistic" placeholder="是否统计" clearable>
+            <el-option
+              v-for="item in booStatusMap"
+              :key="item.code"
+              :label="item.message"
+              :value="item.code"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="是否计费">
-          <el-input
-            v-model="putInfo.isBilling"
-            placeholder="是否计费"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item label="是否启用">
-          <el-input v-model="putInfo.isEbl" placeholder="是否启用" clearable />
+          <el-select v-model="putInfo.isBilling" placeholder="是否计费" clearable>
+            <el-option
+              v-for="item in booStatusMap"
+              :key="item.code"
+              :label="item.message"
+              :value="item.code"
+            />
+          </el-select>
         </el-form-item>
       </el-form>
       <div style="text-align: right">
@@ -212,8 +203,62 @@ const defaultGatewayRoutes = {
   createTime: '',
   updateTime: ''
 }
+const caseStatusMap = [
+  {
+    code: 0,
+    message: '在线'
+  },
+  {
+    code: 1,
+    message: '下线'
+  }
+]
+const booStatusMap = [
+  {
+    code: true,
+    message: '正常'
+  },
+  {
+    code: false,
+    message: '禁用'
+  }
+]
 export default {
   components: { Pagination },
+  filters: {
+    statusFilter(status) {
+      const statusMap = {
+        0: 'success',
+        1: 'info'
+      }
+      return statusMap[status]
+    },
+    booFilter(status) {
+      const statusMap = {
+        true: 'success',
+        false: 'warning'
+      }
+      return statusMap[status]
+    },
+    statusTextFilter(status) {
+      let value = null
+      caseStatusMap.forEach((arg) => {
+        if (arg.code === status) {
+          value = arg.message
+        }
+      })
+      return value
+    },
+    booStatusMapFilter(status) {
+      let value = null
+      booStatusMap.forEach((arg) => {
+        if (arg.code === status) {
+          value = arg.message
+        }
+      })
+      return value
+    }
+  },
   data() {
     return {
       dialogVisible: false,
@@ -226,7 +271,9 @@ export default {
         current: 1,
         size: 20
       },
-      putInfo: Object.assign({}, defaultGatewayRoutes)
+      putInfo: Object.assign({}, defaultGatewayRoutes),
+      statusMap: caseStatusMap,
+      booStatusMap: booStatusMap
     }
   },
   created() {
@@ -292,6 +339,19 @@ export default {
         })
         .catch((err) => {
           console.error(err)
+        })
+    },
+    async operline(scope) {
+      const row = scope.row
+      // 上线
+      if (row.isEbl === 1) {
+        row.isEbl = 0
+      } else {
+        // 下线
+        row.isEbl = 1
+      }
+      await updateGatewayRoutes(row).then(() => {
+          this.fetchData()
         })
     }
   }

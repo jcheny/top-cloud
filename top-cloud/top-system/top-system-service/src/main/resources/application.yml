@@ -2,6 +2,14 @@ server:
   port: 32011
 spring:
   cloud:
+    stream:
+      kafka:
+        binder:
+          replication-factor: 1
+      bindings:
+        SAVE_ROUTE: { destination: SAVE_ROUTE, content-type: application/json, group: ROUTE_GROUP_SAVE, consumer.maxAttemps: 1 }
+        UPDATE_ROUTE: { destination: UPDATE_ROUTE, content-type: application/json, group: ROUTE_GROUP_UPDATE, consumer.maxAttemps: 1 }
+        DELETE_ROUTE: { destination: DELETE_ROUTE, content-type: application/json, group: ROUTE_GROUP_DELETE, consumer.maxAttemps: 1 }
     alicloud:
       access-key: xxxx
       secret-key: xxxx

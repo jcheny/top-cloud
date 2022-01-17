@@ -13,12 +13,12 @@ spec:
         app: top-authorization
     spec:
       imagePullSecrets:
-        - name: sense-video
+        - name: top-cloud
       tolerations:
         - effect: NoExecute
           key: project
           operator: Equal
-          value: sense-video
+          value: top-cloud
       serviceAccount: {{ .Values.service_account }}
       serviceAccountName: {{ .Values.service_account }}
       containers:

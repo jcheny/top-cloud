@@ -31,10 +31,10 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="fetchData">查询</el-button>
+        <el-button v-if="$store.getters.hasPermission('USER_QUERY')" type="primary" @click="fetchData">查询</el-button>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="handleSave">新增</el-button>
+        <el-button v-if="$store.getters.hasPermission('USER_SAVE')" type="primary" @click="handleSave">新增</el-button>
       </el-form-item>
     </el-form>
 
@@ -46,11 +46,6 @@
       fit
       highlight-current-row
     >
-      <el-table-column align="center" label="ID" width="95">
-        <template slot-scope="scope">
-          {{ scope.$index }}
-        </template>
-      </el-table-column>
       <el-table-column label="用户名" align="center">
         <template slot-scope="scope">
           {{ scope.row.username }}
@@ -97,8 +92,8 @@
 
       <el-table-column align="center" label="操作">
         <template slot-scope="scope">
-          <el-button type="primary" @click="handleEdit(scope)">编辑</el-button>
-          <el-button type="danger" @click="handleDelete(scope)">删除</el-button>
+          <el-button v-if="$store.getters.hasPermission('USER_EDIT')" type="primary" @click="handleEdit(scope)">编辑</el-button>
+          <el-button v-if="$store.getters.hasPermission('USER_DELETE')" type="danger" @click="handleDelete(scope)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>

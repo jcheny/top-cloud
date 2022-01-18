@@ -30,10 +30,10 @@
         />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="fetchData">查询</el-button>
+        <el-button v-if="$store.getters.hasPermission('AUTO_QUERY')" type="primary" @click="fetchData">查询</el-button>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="handleSave">新增</el-button>
+        <el-button v-if="$store.getters.hasPermission('AUTO_SAVE')" type="primary" @click="handleSave">新增</el-button>
       </el-form-item>
     </el-form>
 
@@ -73,21 +73,25 @@
       <el-table-column align="center" label="操作">
         <template slot-scope="scope">
           <el-button
+            v-if="$store.getters.hasPermission('AUTO_QUERY')"
             type="text"
             icon="el-icon-video-play"
             @click="previewTable(scope)"
           >预览</el-button>
           <el-button
+            v-if="$store.getters.hasPermission('AUTO')"
             type="text"
             icon="el-icon-paperclip"
             @click="autoCode(scope)"
           >生成代码</el-button>
           <el-button
+            v-if="$store.getters.hasPermission('AUTO_EDIT')"
             type="text"
             icon="el-icon-edit"
             @click="handleEdit(scope)"
           >编辑</el-button>
           <el-button
+            v-if="$store.getters.hasPermission('AUTO_DELETE')"
             type="text"
             icon="el-icon-delete-solid"
             @click="handleDelete(scope)"

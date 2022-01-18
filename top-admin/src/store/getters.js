@@ -13,7 +13,7 @@ const getters = {
   hasPermission: state => (auth) => {
     var authorize = state.authorize.authorize.length === 0 ? JSON.parse(localStorage.getItem('authorize')) : state.authorize.authorize
     var flag = false
-    authorize.array.forEach(element => {
+    authorize.forEach(element => {
       if (element === auth) {
         flag = true
       }

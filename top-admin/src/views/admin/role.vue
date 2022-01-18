@@ -8,10 +8,10 @@
         <el-input v-model="listQuery.code" placeholder="角色代码" clearable />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="fetchData">查询</el-button>
+        <el-button v-if="$store.getters.hasPermission('ROLE_QUERY')" type="primary" @click="fetchData">查询</el-button>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="handleAddRole">新增</el-button>
+        <el-button v-if="$store.getters.hasPermission('ROLE_SAVE')" type="primary" @click="handleAddRole">新增</el-button>
       </el-form-item>
     </el-form>
 
@@ -23,11 +23,6 @@
       fit
       highlight-current-row
     >
-      <el-table-column align="center" label="ID" width="95">
-        <template slot-scope="scope">
-          {{ scope.$index }}
-        </template>
-      </el-table-column>
       <el-table-column label="角色名称" align="center" width="95">
         <template slot-scope="scope">
           {{ scope.row.name }}
@@ -58,16 +53,19 @@
       <el-table-column align="center" label="操作">
         <template slot-scope="scope">
           <el-button
+            v-if="$store.getters.hasPermission('ROLE_EDIT')"
             type="text"
             icon="el-icon-edit"
             @click="handleEdit(scope)"
           >编辑</el-button>
           <el-button
+            v-if="$store.getters.hasPermission('ROLE_DELETE')"
             type="text"
             icon="el-icon-delete-solid"
             @click="handleDelete(scope)"
           >删除</el-button>
           <el-button
+            v-if="$store.getters.hasPermission('ROLE_AUTHORIZE')"
             type="text"
             icon="el-icon-s-tools"
             @click="openAuthorize(scope)"

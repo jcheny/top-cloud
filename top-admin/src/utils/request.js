@@ -49,7 +49,7 @@ service.interceptors.response.use(
       router.push('/401')
       // return Promise.reject(new Error(res.message || 'Error'))
     }
-    if (res.code === 503) {
+    if (response.status === 503) {
       Message({
         message: '网关超时',
         type: 'error',

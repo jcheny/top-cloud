@@ -38,8 +38,8 @@ public class LogController {
     public R<IPage<Log>> list(String group,
                               Long userId,
                               String agent,
-                              String startTime,
                               String method,
+                              String startTime,
                               String endTime,
                               Page<Log> page){
         return R.data(logService.page(page, new LambdaQueryWrapper<Log>()
@@ -47,8 +47,8 @@ public class LogController {
                 .eq(userId != null,Log::getUserId,userId)
                 .like(StringUtils.isNotBlank(agent),Log::getAgent,agent)
                 .eq(StringUtils.isNotBlank(method),Log::getMethod,method)
-                .le(startTime!=null,Log::getCreateTime,endTime)
-                .ge(endTime != null,Log::getCreateTime,startTime)
+                .ge(startTime!=null,Log::getCreateTime,startTime)
+                .le(endTime != null,Log::getCreateTime,endTime)
                 .orderByDesc(Log::getCreateTime)
                 )
         );

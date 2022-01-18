@@ -180,8 +180,8 @@ export default {
   },
   data() {
     return {
-      checkedAutoAuth: true,
-      checkedAutoMenu: true,
+      checkedAutoAuth: false,
+      checkedAutoMenu: false,
       dialogVisible: false,
       dialogType: 'new',
       listLoading: false,
@@ -216,8 +216,6 @@ export default {
     },
     handleSaveNode(scope) {
       this.putInfo = Object.assign({}, defaultMenu)
-      console.log(scope.row.id)
-      console.log(scope)
       this.putInfo.parentId = scope.row.id
       this.dialogType = 'new'
       this.dialogVisible = true
@@ -264,6 +262,8 @@ export default {
               })
             }
           }
+          this.checkedAutoAuth = false
+          this.checkedAutoMenu = false
           this.fetchData()
         })
       }

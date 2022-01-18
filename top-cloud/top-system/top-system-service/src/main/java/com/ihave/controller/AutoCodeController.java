@@ -16,6 +16,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -52,10 +53,11 @@ public class AutoCodeController{
 			@ApiImplicitParam(name = "size", value = "每页条数", paramType = "query", dataType = "int", example = "10")
 	})
 	@GetMapping("/page")
-    public R<IPage<AutoCodeVo>> page(@ApiIgnore Page<AutoCode> page)
+    public R<IPage<AutoCodeVo>> page(@ApiIgnore Page<AutoCode> page,String tableName )
     {
 		Page<AutoCode> pageList = autoCodeService.page(page, new LambdaQueryWrapper<AutoCode>()
-				.orderByDesc(AutoCode::getCreateTime)
+						.like(StringUtils.isNotBlank(tableName),AutoCode::getTableName,tableName)
+						.orderByDesc(AutoCode::getCreateTime)
 		);
 		return R.data(AutoCodeWrapper.build().pageVO(pageList));
     }

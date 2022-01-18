@@ -2,12 +2,15 @@ package com.ihave.aspect;
 
 import cn.hutool.core.lang.Snowflake;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.ihave.utils.IpUtil;
 import com.ihave.utils.ObjectUtil;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
@@ -43,13 +46,13 @@ public class WebAdminLogAspect {
     private static final String defNote = "该方法没有备注";
     private static final Long defUserId = 0L;
 
-    Snowflake snowflake = new Snowflake(1,1);
+    Snowflake snowflake = new Snowflake(1, 1);
 
     @Autowired
     private LogService logService;
 
     //切面表达式
-    @Pointcut("execution(* com.ihave.controller.*.*(..))")
+    @Pointcut(value = "execution(* com.ihave.controller.*.*(..))")
     public void setWebLogAspectPointcut() {
 
     }
@@ -57,29 +60,73 @@ public class WebAdminLogAspect {
     @Value("${spring.application.name}")
     private String serverName;
 
+    @AfterThrowing(throwing = "ex"
+            , pointcut = "setWebLogAspectPointcut()")
+    // 声明ex时指定的类型会限制目标方法必须抛出指定类型的异常
+    // 此处将ex的类型声明为Throwable，意味着对目标方法抛出的异常不加限制
+    public void doRecoveryActions(JoinPoint joinPoint, Throwable ex) {
+        Log _log = new Log();
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        setMethodInfo(_log, signature);
+        _log.setUserId(setUserId());
+        setRequestInfo(_log);
+        _log.setGroup(serverName);
+        _log.setType(LogEnum.ERROR.getCode());
+        _log.setCreateTime(new Date());
+        _log.setId(snowflake.nextId());
+        _log.setParams(getMethodParameter(signature.getMethod(),joinPoint.getArgs()).toString());
+        _log.setRemark(ex.getMessage());
+        logService.save(_log);
+    }
+
     //ProceedingJoinPoint 这个是就代表目标方法
     @Around(value = "setWebLogAspectPointcut()")
     public Object aroundAdvice(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
-
         Log _log = new Log();
-
         //获取执行方法的实例
         MethodSignature signature = (MethodSignature) proceedingJoinPoint.getSignature();
-        Method method = signature.getMethod();
+        setMethodInfo(_log, signature);
 
-        //过去方法上的注解
-        ApiOperation annotation = method.getAnnotation(ApiOperation.class);
+        _log.setUserId(setUserId());
 
-        //设置方法的描述
-        if (annotation == null) {
-            _log.setDescription(defDescription);
+        //设置方法的消耗时间
+        Object result = null;
+        StopWatch stopWatch = new StopWatch(); // 创建计时器
+        stopWatch.start(); //  开始计时器
+        result = proceedingJoinPoint.proceed(proceedingJoinPoint.getArgs()); // 不需要我们自己处理这个异常
+        stopWatch.stop(); // 记时结束
+        setRequestInfo(_log);
+        //设置方法的消耗时间
+        _log.setTime(stopWatch.getTotalTimeMillis());
+        _log.setGroup(serverName);
+        _log.setType(LogEnum.INFO.getCode());
+        _log.setCreateTime(new Date());
+        _log.setId(snowflake.nextId());
+        _log.setParams(getMethodParameter(signature.getMethod(), proceedingJoinPoint.getArgs()).toString());
+        //保存日志到数据库
+        log.info(JSON.toJSONString(_log, true));
+        logService.save(_log);
+        return result;
+
+    }
+
+    public static void setRequestInfo(Log log){
+        ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        //获取请求request
+        assert requestAttributes != null;
+        HttpServletRequest request = requestAttributes.getRequest();
+        String user_agent = request.getHeader("User-Agent");
+        if (ObjectUtil.isEmpty(user_agent)) {
+            log.setAgent("Unknown");
         } else {
-            String value = annotation.value();
-            String notes = annotation.notes();
-            _log.setDescription(StringUtils.isBlank(value) ? defDescription : value);
-            _log.setRemark(StringUtils.isBlank(notes) ? defNote : notes);
+            log.setAgent(user_agent);
         }
+        log.setUrl(request.getServletPath());
+        log.setMethod(request.getMethod());
+        log.setIp(IpUtil.getIpAddr(request));
+    }
 
+    public static Long setUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         //设置用户
         long userId;
@@ -89,42 +136,24 @@ public class WebAdminLogAspect {
         } catch (Exception e) {
             userId = defUserId;
         }
+        return userId;
+    }
 
-        _log.setUserId(userId);
+    public static void setMethodInfo(Log log, MethodSignature signature) {
+        Method method = signature.getMethod();
 
-        //设置方法的消耗时间
-        Object result = null;
-        StopWatch stopWatch = new StopWatch(); // 创建计时器
-        stopWatch.start(); //  开始计时器
-        result = proceedingJoinPoint.proceed(proceedingJoinPoint.getArgs()); // 不需要我们自己处理这个异常
-        stopWatch.stop(); // 记时结束
+        //过去方法上的注解
+        ApiOperation annotation = method.getAnnotation(ApiOperation.class);
 
-        //设置方法的消耗时间
-        _log.setTime(stopWatch.getTotalTimeMillis());
-
-        ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-
-        //获取请求request
-        assert requestAttributes != null;
-        HttpServletRequest request = requestAttributes.getRequest();
-        String user_agent = request.getHeader("User-Agent");
-        if (ObjectUtil.isEmpty(user_agent)) {
-            _log.setAgent("Unknown");
+        //设置方法的描述
+        if (annotation == null) {
+            log.setDescription(defDescription);
         } else {
-            _log.setAgent(user_agent);
+            String value = annotation.value();
+            String notes = annotation.notes();
+            log.setDescription(StringUtils.isBlank(value) ? defDescription : value);
+            log.setRemark(StringUtils.isBlank(notes) ? defNote : notes);
         }
-        _log.setUrl(request.getServletPath());
-        _log.setGroup(serverName);
-        _log.setIp(IpUtil.getIpAddr(request));
-        _log.setMethod(request.getMethod());
-        _log.setCreateTime(new Date());
-        _log.setId(snowflake.nextId());
-        _log.setParams(getMethodParameter(method, proceedingJoinPoint.getArgs()).toString());
-        //保存日志到数据库
-        log.info(JSON.toJSONString(_log, true));
-        logService.save(_log);
-        return result;
-
     }
 
     public static Object getMethodParameter(Method method, Object[] args) {
@@ -141,7 +170,9 @@ public class WebAdminLogAspect {
                     methodParameters.put(parameterNames[i], "受限制的参数类型");
                 } else {
                     if (!parameterNames[i].equalsIgnoreCase("page")) {
-                        methodParameters.put(parameterNames[i], args[i] == null ? "null" : JSON.toJSONString(args[i]));
+                        if(args[i] != null ){
+                            methodParameters.put(parameterNames[i], JSON.toJSONString(args[i],SerializerFeature.WriteMapNullValue,SerializerFeature.WriteNullStringAsEmpty,SerializerFeature.WriteNullListAsEmpty));
+                        }
                     }
 
                 }

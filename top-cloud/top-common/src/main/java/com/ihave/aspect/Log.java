@@ -47,7 +47,7 @@ public class Log implements Serializable {
     private Long userId;
 
     /**
-     * 日志类型 1查询 2修改 3新增 4删除 5导出 6审核
+     * 日志类型 1`INFO 2`DEBUG 3`WARING 4`ERROR
      */
     @TableField(value = "`type`")
     @ApiModelProperty(value = "日志类型")

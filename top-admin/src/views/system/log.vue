@@ -1,56 +1,30 @@
 <template>
   <div class="app-container">
     <el-form :inline="true" :model="listQuery" class="demo-form-inline">
-      <el-form-item label="主键">
-        <el-input v-model="listQuery.id" placeholder="主键" clearable />
-      </el-form-item>
       <el-form-item label="组">
         <el-input v-model="listQuery.group" placeholder="组" clearable />
       </el-form-item>
       <el-form-item label="用户Id">
         <el-input v-model="listQuery.userId" placeholder="用户Id" clearable />
       </el-form-item>
-      <el-form-item label="日志类型">
-        <el-input
-          v-model="listQuery.type"
-          placeholder="日志类型"
-          clearable
-        />
-      </el-form-item>
       <el-form-item label="方法">
-        <el-input v-model="listQuery.method" placeholder="方法" clearable />
-      </el-form-item>
-      <el-form-item label="参数">
-        <el-input v-model="listQuery.params" placeholder="参数" clearable />
-      </el-form-item>
-      <el-form-item label="时间">
-        <el-input v-model="listQuery.time" placeholder="时间" clearable />
-      </el-form-item>
-      <el-form-item label="IP地址">
-        <el-input v-model="listQuery.ip" placeholder="IP地址" clearable />
-      </el-form-item>
-      <el-form-item label="描述">
-        <el-input
-          v-model="listQuery.description"
-          placeholder="描述"
-          clearable
-        />
-      </el-form-item>
-      <el-form-item label="备注">
-        <el-input v-model="listQuery.remark" placeholder="备注" clearable />
-      </el-form-item>
-      <el-form-item label="创建时间">
-        <el-input
-          v-model="listQuery.createTime"
-          placeholder="创建时间"
-          clearable
-        />
+        <el-select v-model="listQuery.method" placeholder="方法" clearable>
+          <el-option
+            v-for="item in methodMap"
+            :key="item.message"
+            :label="item.message"
+            :value="item.message"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="代理">
         <el-input v-model="listQuery.agent" placeholder="代理" clearable />
       </el-form-item>
-      <el-form-item label="接口路径">
-        <el-input v-model="listQuery.url" placeholder="接口路径" clearable />
+      <el-form-item label="开始时间">
+        <el-date-picker v-model="listQuery.startTime" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期时间" />
+      </el-form-item>
+      <el-form-item label="结束时间">
+        <el-date-picker v-model="listQuery.endTime" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期时间" />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="fetchData">查询</el-button>
@@ -65,11 +39,6 @@
       fit
       highlight-current-row
     >
-      <el-table-column label="主键" align="center">
-        <template slot-scope="scope">
-          {{ scope.row.id }}
-        </template>
-      </el-table-column>
       <el-table-column label="组" align="center">
         <template slot-scope="scope">
           {{ scope.row.group }}
@@ -85,7 +54,9 @@
         align="center"
       >
         <template slot-scope="scope">
-          {{ scope.row.type }}
+          <el-tag :type="scope.row.type | statusFilter">
+            {{ scope.row.type | statusTextFilter }}
+          </el-tag>
         </template>
       </el-table-column>
       <el-table-column label="方法" align="center">
@@ -147,8 +118,60 @@
 <script>
 import { getLogList } from '@/api/system/log'
 import Pagination from '@/components/Pagination'
+const caseStatusMap = [
+  {
+    code: 1,
+    message: 'INFO'
+  },
+  {
+    code: 2,
+    message: 'DEBUG'
+  },
+  {
+    code: 3,
+    message: 'WARING'
+  },
+  {
+    code: 4,
+    message: 'ERROR'
+  }
+]
+const methodMap = [
+  {
+    message: 'GET'
+  },
+  {
+    message: 'POST'
+  },
+  {
+    message: 'PUT'
+  },
+  {
+    message: 'DELETE'
+  }
+]
 export default {
   components: { Pagination },
+  filters: {
+    statusFilter(status) {
+      const statusMap = {
+        1: 'success',
+        2: 'info',
+        3: 'warning',
+        4: 'danger'
+      }
+      return statusMap[status]
+    },
+    statusTextFilter(status) {
+      let value = null
+      caseStatusMap.forEach((arg) => {
+        if (arg.code === status) {
+          value = arg.message
+        }
+      })
+      return value
+    }
+  },
   data() {
     return {
       list: null,
@@ -158,7 +181,8 @@ export default {
       listQuery: {
         current: 1,
         size: 20
-      }
+      },
+      methodMap: methodMap
     }
   },
   created() {

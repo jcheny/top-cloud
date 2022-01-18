@@ -18,10 +18,7 @@ import reactor.core.publisher.Mono;
 
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -37,9 +34,9 @@ public class GatewayServiceHandler implements ApplicationEventPublisherAware, Co
 
     private ApplicationEventPublisher publisher;
 
-    private static final String BASE_COLUMN = "id,route_id as routeId,route_uri as routeUri,route_order as routeOrder ,predicates,filters,is_statistic as isStatistic,is_billing as isBilling,is_ebl as isEbl,is_deleted as isDel ,create_time as createTime,update_time as updateTime ";
+    private static final String BASE_COLUMN = "id,route_id as routeId,route_uri as routeUri,route_order as routeOrder ,predicates,filters,is_statistic as isStatistic,is_billing as isBilling,is_ebl as isEbl, create_time as createTime,update_time as updateTime ";
 
-    private static final String QUERY_GATEWAY_ROUTES = "select " + BASE_COLUMN + " from top_gateway_routes where is_deleted = 0 and is_ebl = 0";
+    private static final String QUERY_GATEWAY_ROUTES = "select " + BASE_COLUMN + " from top_gateway_routes where is_ebl = 0";
 
     @Override
     public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
@@ -91,7 +88,6 @@ public class GatewayServiceHandler implements ApplicationEventPublisherAware, Co
     /**
      * 保存路由，并刷新路由信息
      *
-     * @param gatewayRoute
      */
     public void saveRoute(GatewayRoutes gatewayRoute) {
         RouteDefinition definition = handleData(gatewayRoute);
@@ -102,11 +98,9 @@ public class GatewayServiceHandler implements ApplicationEventPublisherAware, Co
     /**
      * 更新路由，并刷新路由信息
      *
-     * @param gatewayRoute
      */
     public void updateRoute(GatewayRoutes gatewayRoute) {
         RouteDefinition definition = handleData(gatewayRoute);
-
         routeDefinitionWriter.delete(Mono.just(definition.getId())).subscribe();
         routeDefinitionWriter.save(Mono.just(definition)).subscribe();
         this.publisher.publishEvent(new RefreshRoutesEvent(this));
@@ -115,7 +109,6 @@ public class GatewayServiceHandler implements ApplicationEventPublisherAware, Co
     /**
      * 删除路由，并刷新路由信息
      *
-     * @param routeId
      */
     public void deleteRoute(String routeId) {
         routeDefinitionWriter.delete(Mono.just(routeId)).subscribe();
@@ -126,8 +119,6 @@ public class GatewayServiceHandler implements ApplicationEventPublisherAware, Co
     /**
      * 路由数据转换的公共方法
      *
-     * @param gatewayRoute
-     * @return
      */
     private RouteDefinition handleData(GatewayRoutes gatewayRoute) {
         RouteDefinition definition = new RouteDefinition();
@@ -160,8 +151,8 @@ public class GatewayServiceHandler implements ApplicationEventPublisherAware, Co
         filterParams.put("_genkey_0", gatewayRoute.getFilters().toString());
         filterDefinition.setArgs(filterParams);
 
-        definition.setPredicates(Arrays.asList(predicate));
-        definition.setFilters(Arrays.asList(filterDefinition));
+        definition.setPredicates(Collections.singletonList(predicate));
+        definition.setFilters(Collections.singletonList(filterDefinition));
         definition.setUri(uri);
         return definition;
     }

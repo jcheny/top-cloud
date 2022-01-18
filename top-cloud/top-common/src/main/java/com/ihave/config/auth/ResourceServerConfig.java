@@ -1,7 +1,6 @@
 package com.ihave.config.auth;
 
 import com.ihave.config.auth.exception.AuthExceptionEntryPoint;
-import com.ihave.config.auth.exception.CustomAccessDeniedHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,9 +32,6 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     @Autowired
     private AuthExceptionEntryPoint authExceptionEntryPoint;
-
-    @Autowired
-    private CustomAccessDeniedHandler customAccessDeniedHandler;
 
     @Value("${spring.application.name}")
     private String applicationName;
@@ -78,7 +74,6 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
         resources.tokenStore(tokenStore())
                 .authenticationEntryPoint(authExceptionEntryPoint)
-                .accessDeniedHandler(customAccessDeniedHandler)
                 .resourceId(applicationName);
     }
 

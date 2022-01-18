@@ -1,14 +1,14 @@
 package com.ihave.entity;
 
-import java.io.Serializable;
-import java.util.Date;
-
 import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
+import java.util.Date;
 
 /** 
 * @author SENSETIME\xuxuangan
@@ -69,14 +69,14 @@ public class Route implements Serializable {
      */
     @TableField(value = "is_statistic")
     @ApiModelProperty(value="是否统计")
-    private Boolean isStatistic;
+    private Integer isStatistic;
 
     /**
      * 是否计费
      */
     @TableField(value = "is_billing")
     @ApiModelProperty(value="是否计费")
-    private Boolean isBilling;
+    private Integer isBilling;
 
     /**
      * 是否启用
@@ -84,14 +84,6 @@ public class Route implements Serializable {
     @TableField(value = "is_ebl")
     @ApiModelProperty(value="是否启用")
     private Integer isEbl;
-
-    /**
-     * 0未删，1删除
-     */
-    @TableField(value = "is_deleted")
-    @ApiModelProperty(value="0未删，1删除")
-    @TableLogic
-    private Integer isDeleted;
 
     /**
      * 创建时间
@@ -126,8 +118,6 @@ public class Route implements Serializable {
     public static final String COL_IS_BILLING = "is_billing";
 
     public static final String COL_IS_EBL = "is_ebl";
-
-    public static final String COL_IS_DEL = "is_del";
 
     public static final String COL_CREATE_TIME = "create_time";
 

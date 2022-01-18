@@ -4,50 +4,6 @@
       <el-form-item label="路由id">
         <el-input v-model="listQuery.routeId" placeholder="路由id" clearable />
       </el-form-item>
-      <el-form-item label="转发目标uri">
-        <el-input
-          v-model="listQuery.routeUri"
-          placeholder="转发目标uri"
-          clearable
-        />
-      </el-form-item>
-      <el-form-item label="访问路径">
-        <el-input
-          v-model="listQuery.predicates"
-          placeholder="访问路径"
-          clearable
-        />
-      </el-form-item>
-      <el-form-item label="是否统计">
-        <el-select v-model="listQuery.isStatistic" placeholder="是否可用" clearable>
-          <el-option
-            v-for="item in booStatusMap"
-            :key="item.code"
-            :label="item.message"
-            :value="item.code"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="是否计费">
-        <el-select v-model="listQuery.isBilling" placeholder="是否计费" clearable>
-          <el-option
-            v-for="item in booStatusMap"
-            :key="item.code"
-            :label="item.message"
-            :value="item.code"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="是否启用">
-        <el-select v-model="listQuery.isEbl" placeholder="是否可用" clearable>
-          <el-option
-            v-for="item in statusMap"
-            :key="item.code"
-            :label="item.message"
-            :value="item.code"
-          />
-        </el-select>
-      </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="fetchData">查询</el-button>
       </el-form-item>
@@ -119,22 +75,22 @@
       :title="dialogType === 'edit' ? '编辑' : '新增'"
     >
       <el-form :model="putInfo" label-width="auto" label-position="left">
-        <el-form-item v-if="dialogType === 'edit' " label="id">
+        <el-form-item v-if="dialogType === 'edit'" label="id">
           <el-input v-model="putInfo.id" placeholder="id" disabled clearable />
         </el-form-item>
-        <el-form-item label="路由id">
+        <el-form-item v-if="dialogType !== 'edit'" label="路由id">
           <el-input v-model="putInfo.routeId" placeholder="路由id" clearable />
         </el-form-item>
-        <el-form-item label="转发目标uri">
+        <el-form-item v-if="dialogType !== 'edit'" label="转发目标uri">
           <el-input
             v-model="putInfo.routeUri"
             placeholder="转发目标uri"
             clearable
           >
-            <template slot="prepend">lb://</template>
+            <template v-if="dialogType !== 'edit'" slot="prepend">lb://</template>
           </el-input>
         </el-form-item>
-        <el-form-item label="访问路径">
+        <el-form-item v-if="dialogType !== 'edit'" label="访问路径">
           <el-input
             v-model="putInfo.predicates"
             placeholder="访问路径"
@@ -186,22 +142,17 @@ import {
   getGatewayRoutesList,
   saveGatewayRoutes,
   updateGatewayRoutes,
-  deleteGatewayRoutes
+  deleteGatewayRoutes,
+  pushGatewayRoutes,
+  outlineGatewayRoutes
 } from '@/api/system/router'
 import Pagination from '@/components/Pagination'
 const defaultGatewayRoutes = {
-  id: '',
   routeId: '',
   routeUri: '',
-  routeOrder: '',
   predicates: '',
-  filters: '',
   isStatistic: '',
-  isBilling: '',
-  isEbl: '',
-  isDeleted: '',
-  createTime: '',
-  updateTime: ''
+  isBilling: ''
 }
 const caseStatusMap = [
   {
@@ -215,11 +166,11 @@ const caseStatusMap = [
 ]
 const booStatusMap = [
   {
-    code: true,
+    code: 0,
     message: '正常'
   },
   {
-    code: false,
+    code: 1,
     message: '禁用'
   }
 ]
@@ -235,8 +186,8 @@ export default {
     },
     booFilter(status) {
       const statusMap = {
-        true: 'success',
-        false: 'warning'
+        0: 'success',
+        1: 'warning'
       }
       return statusMap[status]
     },
@@ -281,6 +232,7 @@ export default {
   },
   methods: {
     fetchData() {
+      this.btnLoading = false
       this.listLoading = true
       getGatewayRoutesList(this.listQuery).then((response) => {
         this.list = response.data.records
@@ -344,15 +296,27 @@ export default {
     async operline(scope) {
       const row = scope.row
       // 上线
-      if (row.isEbl === 1) {
-        row.isEbl = 0
-      } else {
-        // 下线
-        row.isEbl = 1
+      var param = {
+        id: row.id
       }
-      await updateGatewayRoutes(row).then(() => {
+      if (row.isEbl === 1) {
+        await pushGatewayRoutes(param).then(() => {
+          this.$message({
+            type: 'success',
+            message: '操作成功!'
+          })
           this.fetchData()
         })
+      } else {
+        // 下线
+        await outlineGatewayRoutes(param).then(() => {
+          this.$message({
+            type: 'success',
+            message: '操作成功!'
+          })
+          this.fetchData()
+        })
+      }
     }
   }
 }

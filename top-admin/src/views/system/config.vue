@@ -19,10 +19,10 @@
         <el-input v-model="listQuery.value" placeholder="配置值" clearable />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="fetchData">查询</el-button>
+        <el-button v-if="$store.getters.hasPermission('CONFIG_QUERY')" type="primary" @click="fetchData">查询</el-button>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="handleSave">新增</el-button>
+        <el-button v-if="$store.getters.hasPermission('CONFIG_SAVE')" type="primary" @click="handleSave">新增</el-button>
       </el-form-item>
     </el-form>
 
@@ -66,8 +66,8 @@
       </el-table-column>
       <el-table-column align="center" label="操作">
         <template slot-scope="scope">
-          <el-button type="primary" @click="handleEdit(scope)">编辑</el-button>
-          <el-button type="danger" @click="handleDelete(scope)">删除</el-button>
+          <el-button v-if="$store.getters.hasPermission('CONFIG_EDIT')" type="primary" @click="handleEdit(scope)">编辑</el-button>
+          <el-button v-if="$store.getters.hasPermission('CONFIG_DELETE')" type="danger" @click="handleDelete(scope)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>

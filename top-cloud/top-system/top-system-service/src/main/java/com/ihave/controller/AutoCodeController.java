@@ -19,6 +19,7 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -53,6 +54,7 @@ public class AutoCodeController{
 			@ApiImplicitParam(name = "size", value = "每页条数", paramType = "query", dataType = "int", example = "10")
 	})
 	@GetMapping("/page")
+	@PreAuthorize("hasAuthority('AUTO_QUERY')")
     public R<IPage<AutoCodeVo>> page(@ApiIgnore Page<AutoCode> page,String tableName )
     {
 		Page<AutoCode> pageList = autoCodeService.page(page, new LambdaQueryWrapper<AutoCode>()
@@ -64,18 +66,21 @@ public class AutoCodeController{
 
 	@GetMapping("/{id}")
 	@ApiOperation(value = "根据id获取", notes = "id")
+	@PreAuthorize("hasAuthority('AUTO_QUERY')")
 	public R<AutoCode> getOne(@PathVariable(value = "id") Long id) {
 		return R.data(autoCodeService.getById(id));
 	}
 
 	@GetMapping("/check/{id}")
 	@ApiOperation(value = "检查该条记录数据")
+	@PreAuthorize("hasAuthority('AUTO_QUERY')")
 	public R<Object> checkData(@PathVariable(value = "id") Long id){
 		return R.data(autoCodeService.checkData(id));
 	}
 
 	@GetMapping("/auto/{id}")
 	@ApiOperation(value = "该条记录生成代码")
+	@PreAuthorize("hasAuthority('AUTO')")
 	public R<Object> autoData(@PathVariable(value = "id") Long id){
 		if(!active.equals(AppConstant.DEV_CODE)){
 			throw new ApiException("非本地环境不可使用");
@@ -86,12 +91,14 @@ public class AutoCodeController{
 
 	@PostMapping
 	@ApiOperation(value = "新增", notes = "实体")
+	@PreAuthorize("hasAuthority('AUTO_SAVE')")
 	public R<Object> save(@RequestBody AutoCodeRequest request) {
 		return R.status(autoCodeService.save(AutoCodeWrapper.build().requestEntity(request)));
 	}
 
 	@PutMapping
 	@ApiOperation(value = "修改", notes = "实体")
+	@PreAuthorize("hasAuthority('AUTO_EDIT')")
 	public R<Object> update(@RequestBody AutoCodeRequest request) {
 		return R.status(autoCodeService.updateById(AutoCodeWrapper.build().requestEntity(request)));
 	}
@@ -99,6 +106,7 @@ public class AutoCodeController{
 	@DeleteMapping
 	@ApiImplicitParam(name = "ids", value = "ids", paramType = "query", dataType = "Long")
 	@ApiOperation(value = "删除", notes = "ids")
+	@PreAuthorize("hasAuthority('AUTO_DELETE')")
 	public R<Object> delete(@ApiIgnore @RequestBody List<Long> ids) {
 		ParamUtil.checkNull(ids,"id不能为空");
 		return R.status(autoCodeService.removeByIds(ids));

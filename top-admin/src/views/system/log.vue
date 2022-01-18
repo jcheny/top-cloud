@@ -27,7 +27,7 @@
         <el-date-picker v-model="listQuery.endTime" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期时间" />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="fetchData">查询</el-button>
+        <el-button v-if="$store.getters.hasPermission('LOG_QUERY')" type="primary" @click="fetchData">查询</el-button>
       </el-form-item>
     </el-form>
 

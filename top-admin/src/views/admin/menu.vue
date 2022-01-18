@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-form :inline="true" :model="listQuery" class="demo-form-inline">
       <el-form-item>
-        <el-button type="primary" @click="handleSave">新增根节点</el-button>
+        <el-button v-if="$store.getters.hasPermission('MENU_SAVE')" type="primary" @click="handleSave">新增根节点</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -31,18 +31,19 @@
       <el-table-column label="操作" align="center">
         <template slot-scope="scope">
           <el-button
-            v-if="scope.row.type === 1"
+            v-if="scope.row.type === 1 && $store.getters.hasPermission('MENU_SAVE')"
             icon="el-icon-plus"
             type="text"
             @click="handleSaveNode(scope)"
           >添加下级</el-button>
           <el-button
+            v-if="$store.getters.hasPermission('MENU_EDIT')"
             type="text"
             icon="el-icon-edit"
             @click="handleEdit(scope)"
           >编辑</el-button>
           <el-button
-            v-if="scope.row.children === undefined"
+            v-if="scope.row.children === undefined && $store.getters.hasPermission('MENU_DELETE')"
             icon="el-icon-delete"
             type="text"
             @click="handleDelete(scope)"

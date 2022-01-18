@@ -5,10 +5,10 @@
         <el-input v-model="listQuery.routeId" placeholder="路由id" clearable />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="fetchData">查询</el-button>
+        <el-button v-if="$store.getters.hasPermission('ROUTE_QUERY')" type="primary" @click="fetchData">查询</el-button>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="handleSave">新增</el-button>
+        <el-button v-if="$store.getters.hasPermission('ROUTE_SAVE')" type="primary" @click="handleSave">新增</el-button>
       </el-form-item>
     </el-form>
 
@@ -63,10 +63,10 @@
       </el-table-column>
       <el-table-column align="center" label="操作">
         <template slot-scope="scope">
-          <el-button v-if="scope.row.isEbl === 1" type="text" icon="el-icon-top" @click="operline(scope)">上线</el-button>
-          <el-button v-if="scope.row.isEbl === 0" type="text" icon="el-icon-bottom" @click="operline(scope)">下线</el-button>
-          <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope)">编辑</el-button>
-          <el-button type="text" icon="el-icon-delete-solid" @click="handleDelete(scope)">删除</el-button>
+          <el-button v-if="scope.row.isEbl === 1 && $store.getters.hasPermission('ROUTE_PUSH')" type="text" icon="el-icon-top" @click="operline(scope)">上线</el-button>
+          <el-button v-if="scope.row.isEbl === 0 && $store.getters.hasPermission('ROUTE_OUTLINE')" type="text" icon="el-icon-bottom" @click="operline(scope)">下线</el-button>
+          <el-button v-if="$store.getters.hasPermission('ROUTE_EDIT')" type="text" icon="el-icon-edit" @click="handleEdit(scope)">编辑</el-button>
+          <el-button v-if="$store.getters.hasPermission('ROUTE_DELETE')" type="text" icon="el-icon-delete-solid" @click="handleDelete(scope)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>

@@ -7,6 +7,7 @@ import ${parentPack}.service.${tableInfo.javaTableName}Service;
 import ${parentPack}.utils.ParamUtil;
 import ${parentPack}.vo.${tableInfo.javaTableName}Vo;
 import ${parentPack}.wrapper.${tableInfo.javaTableName}Wrapper;
+import com.ihave.utils.ObjectUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -19,6 +20,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -29,7 +31,7 @@ import java.util.List;
  */
 @Api(tags = "${tableInfo.tableComment}")
 @RestController
-@RequestMapping("/${tableInfo.javaTableName}")
+@RequestMapping("/${tableInfo.javaTableName_a}")
 public class ${tableInfo.javaTableName}Controller{
 
 	
@@ -54,14 +56,13 @@ public class ${tableInfo.javaTableName}Controller{
 	@GetMapping("/page")
     public R<IPage<${tableInfo.javaTableName}Vo>> page(
 	#foreach ($column in $beanColumns)
-													    ${column.javaType} ${column.beanName},
+		${column.javaType} ${column.beanName},
 	#end
-			@ApiIgnore Page<${tableInfo.javaTableName}> page
-													   )
+		@ApiIgnore Page<${tableInfo.javaTableName}> page)
     {
 		Page<${tableInfo.javaTableName}> pageList = ${tableInfo.javaTableName_a}Service.page(page, new LambdaQueryWrapper<${tableInfo.javaTableName}>()
 		#foreach ($column in $beanColumns)
-				.like(StringUtils.isNoneBlank(${column.beanName}),'${column.column_name}',${column.beanName})
+				.like(ObjectUtil.isNotEmpty(${column.beanName}),${tableInfo.javaTableName}::get${column.javaName},${column.beanName})
 		#end
 				.orderByDesc(${tableInfo.javaTableName}::getCreateTime)
 		);

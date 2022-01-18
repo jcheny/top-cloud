@@ -50,6 +50,7 @@ public class AutoCodeController{
 	 */
 	@ApiOperation(value = "分页查询", notes = "分页查询")
 	@ApiImplicitParams({
+			@ApiImplicitParam(name = "tableName", value = "表名"),
 			@ApiImplicitParam(name = "current", value = "当前页数", paramType = "query", dataType = "int", example = "1"),
 			@ApiImplicitParam(name = "size", value = "每页条数", paramType = "query", dataType = "int", example = "10")
 	})

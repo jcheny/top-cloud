@@ -7,6 +7,8 @@ import com.ihave.api.R;
 import com.ihave.entity.Route;
 import com.ihave.service.RouteService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,11 @@ public class RouteController {
 
     @GetMapping("/page")
     @ApiOperation(value = "分页查询路由数据")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "routeId", value = "路由id"),
+            @ApiImplicitParam(name = "current", value = "当前页数", paramType = "query", dataType = "int", example = "1"),
+            @ApiImplicitParam(name = "size", value = "每页条数", paramType = "query", dataType = "int", example = "10")
+    })
     @PreAuthorize("hasAuthority('ROUTE_QUERY')")
     public R<IPage<Route>> page(@ApiIgnore Page<Route> page, String routeId){
         Page<Route> routePage = routeService.page(page, new LambdaQueryWrapper<Route>()

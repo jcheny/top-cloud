@@ -1,8 +1,16 @@
 server:
-  port: 32014
+  port: 32019
+
+
 spring:
   application:
-    name: top-authorization
+    name: top-admin-boot
+  cloud:
+    nacos:
+      discovery:
+        server-addr: nacos-server:8848
+        group: top-cloud
+
 
 management:
   endpoints:

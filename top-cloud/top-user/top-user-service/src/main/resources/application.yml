@@ -16,7 +16,14 @@ swagger2:
   title: top-cloud
   description: top-cloud
   version: V1.0.0
-
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
 feign:
   httpclient:
     connection-timeout: 8000

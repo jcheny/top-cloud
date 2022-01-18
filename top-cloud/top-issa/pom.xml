@@ -19,6 +19,7 @@
     <modules>
         <module>top-authorization</module>
         <module>top-gateway</module>
+        <module>top-sba</module>
     </modules>
 
 </project>

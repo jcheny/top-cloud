@@ -70,11 +70,11 @@
             <artifactId>spring-cloud-stream-binder-kafka</artifactId>
         </dependency>
 
+        <!--健康检查-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
-
         <!-- kafka 估计需要使用 -->
         <dependency>
             <groupId>com.sun.xml.bind</groupId>

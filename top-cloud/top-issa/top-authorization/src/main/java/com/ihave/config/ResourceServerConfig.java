@@ -35,7 +35,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 "/swagger-resources/configuration/security",//安全选项
                 "/webjars/**",
                 "/doc.html",
-                "/swagger-ui.html"
+                "/swagger-ui.html", "/actuator/**"
         ).permitAll()
                 .antMatchers("/**").authenticated()
                 .and()

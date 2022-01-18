@@ -60,7 +60,8 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 "/versionUpgrade/check",
                 "/sms/**",
                 "/api/**",
-                "/social/oauth/**"
+                "/social/oauth/**",
+                "/actuator/**"
         ).permitAll()
                 .antMatchers("/**").authenticated()
                 .and()

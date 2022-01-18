@@ -21,7 +21,14 @@ spring:
       validTime: 2592000000
   application:
     name: top-system
-
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
 mybatis-plus:
   mapper-locations: classpath:mapper/*.xml
 

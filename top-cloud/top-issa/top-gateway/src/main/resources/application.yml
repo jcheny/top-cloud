@@ -18,6 +18,14 @@ spring:
         UPDATE_ROUTE: { destination: UPDATE_ROUTE, content-type: application/json, group: ROUTE_GROUP_UPDATE, consumer.maxAttemps: 1 }
         DELETE_ROUTE: { destination: DELETE_ROUTE, content-type: application/json, group: ROUTE_GROUP_DELETE, consumer.maxAttemps: 1 }
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
 top:
   gateway:
     ignore:
@@ -33,3 +41,4 @@ top:
         - /api/**
         - /web/**
         - /register
+        - /actuator/**

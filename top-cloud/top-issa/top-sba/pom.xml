@@ -7,7 +7,6 @@
         <artifactId>top-issa</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <groupId>com.ihave</groupId>
     <artifactId>top-sba</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>top-sba</name>

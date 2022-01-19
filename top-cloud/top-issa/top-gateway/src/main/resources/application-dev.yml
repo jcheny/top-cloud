@@ -22,7 +22,7 @@ spring:
     sentinel:
       transport:
         #        dashboard: sentinel-server:8858  # sentinel-dashboard 放在ecs 里面
-        dashboard: sentinel-server:8858  # sentinel-dashboard 放在ecs 里面
+        dashboard: localhost:8858  # sentinel-dashboard 放在ecs 里面
       datasource:
         ds1.file:
           file: classpath:gw-flow.json  # 网关 + API分组的限流
@@ -31,7 +31,6 @@ spring:
 #          serverAddr: nacos-server:8848
 #          dataId: gw-flow
 #          ruleType: gw_flow
-
         ds2.file:
           file: classpath:api-group.json
           ruleType: gw_api_group

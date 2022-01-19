@@ -5,9 +5,9 @@ if [ -n "$1" ]; then
     version=$1
 fi
 
-warehouse="registry.sensetime.com"
-warehouse_title="sense-video-dev"
-user="stmobile-user/stmobile-user-service"
+warehouse="xxxx"
+warehouse_title="xxxx"
+user="top-user/top-user-service"
 baseList="src/main"
 mvn clean
 mvn install -DskipTests

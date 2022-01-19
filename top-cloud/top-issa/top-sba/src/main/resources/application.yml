@@ -1,7 +1,6 @@
 server:
   port: 32019
 
-
 spring:
   application:
     name: top-admin-boot
@@ -10,7 +9,15 @@ spring:
       discovery:
         server-addr: nacos-server:8848
         group: top-cloud
-
+  datasource:
+    url: jdbc:mysql://mysql-server:3306/top_app?useSSL=false&serverTimezon=GMT%28
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  redis:
+    host: redis-server
+    port: 6379
+    password: FSF8WERS3NJVSDG
 
 management:
   endpoints:

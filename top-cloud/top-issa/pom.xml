@@ -20,6 +20,7 @@
         <module>top-authorization</module>
         <module>top-gateway</module>
         <module>top-sba</module>
+        <module>top-job</module>
     </modules>
 
 </project>

@@ -17,6 +17,12 @@ public class SocialUtil {
     public SocialUtil() {
     }
 
+    /**
+     *
+     * @param source 来源
+     * @param socialProperties 属性
+     * @return 一个授权请求
+     */
     public static AuthRequest getAuthRequest(String source, SocialProperties socialProperties) {
         AuthDefaultSource authSource = (AuthDefaultSource) Objects.requireNonNull(AuthDefaultSource.valueOf(source.toUpperCase()));
         AuthConfig authConfig = (AuthConfig)socialProperties.getOauth().get(authSource);

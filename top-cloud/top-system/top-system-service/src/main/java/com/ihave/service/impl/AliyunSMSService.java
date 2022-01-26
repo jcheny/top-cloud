@@ -95,9 +95,9 @@ public class AliyunSMSService implements SMSService, InitializingBean {
 
     /**
      * 发送验证码
-     * @param mobile
+     * @param mobile 手机号
      * @param code 验证码下的什么场景
-     * @throws Exception
+     * @throws Exception 异常
      */
     @Override
     public void send(String mobile, String code){

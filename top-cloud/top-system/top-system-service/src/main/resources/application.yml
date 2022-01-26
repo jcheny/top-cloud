@@ -1,6 +1,10 @@
 server:
   port: 32011
 spring:
+  mail:
+    host: smtp.163.com
+    username: jchen_px@163.com
+    password: PIFZCHAECAEWPXMS
   cloud:
     stream:
       kafka:

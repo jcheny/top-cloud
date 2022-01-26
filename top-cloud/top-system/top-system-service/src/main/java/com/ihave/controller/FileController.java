@@ -12,12 +12,13 @@ import com.aliyuncs.profile.IClientProfile;
 import com.aliyuncs.sts.model.v20150401.AssumeRoleRequest;
 import com.aliyuncs.sts.model.v20150401.AssumeRoleResponse;
 import com.baomidou.mybatisplus.extension.exceptions.ApiException;
+import com.ihave.utils.FileUtil;
 import com.mpatric.mp3agic.ID3v2;
 import com.mpatric.mp3agic.InvalidDataException;
 import com.mpatric.mp3agic.Mp3File;
 import com.mpatric.mp3agic.UnsupportedTagException;
 import com.ihave.api.R;
-import com.ihave.utils.RSAUtils;
+import com.ihave.utils.RSAUtil;
 import com.ihave.utils.ZipUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -76,7 +77,7 @@ public class FileController {
     })
     public R<Object> mp3(@RequestParam(value = "file") String file) throws IOException, UnsupportedTagException {
         Map<String, Object> map = new HashMap<>();
-        File fileX = downloadFile(file);
+        File fileX = FileUtil.downloadFile(file);
         try {
             Mp3File mp3file = new Mp3File(fileX);
             if (mp3file.hasId3v2Tag()) {
@@ -102,41 +103,7 @@ public class FileController {
     }
 
 
-    public static File downloadFile(String url) {
-        File file = null;
 
-        URL urlfile;
-        InputStream inputStream = null;
-        OutputStream outputStream = null;
-        try {
-            //下载
-            file = File.createTempFile("music_", ".tem");
-
-            urlfile = new URL(url);
-            inputStream = urlfile.openStream();
-            outputStream = new FileOutputStream(file);
-            int bytesRead = 0;
-            byte[] buffer = new byte[8192];
-            while ((bytesRead = inputStream.read(buffer, 0, 8192)) != -1) {
-                outputStream.write(buffer, 0, bytesRead);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (null != outputStream) {
-                    outputStream.close();
-                }
-                if (null != inputStream) {
-                    inputStream.close();
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return file;
-    }
 
     /**
      * 把文件存在阿里云oss
@@ -155,7 +122,7 @@ public class FileController {
         Map<String, Object> result = new HashMap<>();
         InputStream inputStream = file.getInputStream();
         String password = UUID.randomUUID().toString();
-        String rsaPassword = RSAUtils.encryptByPrivateKey(RSAUtils.pri_key, password);
+        String rsaPassword = RSAUtil.encryptByPrivateKey(RSAUtil.pri_key, password);
         result.put("hash", rsaPassword);
         String suffix = Objects.requireNonNull(file.getOriginalFilename()).substring(file.getOriginalFilename().lastIndexOf("."));
         if (suffix.equalsIgnoreCase(".zip")) {

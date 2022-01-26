@@ -39,6 +39,8 @@
         <spring-boot-admin.version>2.3.1</spring-boot-admin.version>
         <squareup.okhttp.version>4.9.0</squareup.okhttp.version>
         <fastjson.version>1.2.73</fastjson.version>
+        <xxl-job.version>2.3.0</xxl-job.version>
+        <mybatis-spring.version>2.1.4</mybatis-spring.version>
     </properties>
 
     <dependencies>
@@ -106,6 +108,12 @@
                 <groupId>com.github.xiaoymin</groupId>
                 <artifactId>swagger-bootstrap-ui</artifactId>
                 <version>${swagger-bootstrap-ui.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.mybatis.spring.boot</groupId>
+                <artifactId>mybatis-spring-boot-starter</artifactId>
+                <version>${mybatis-spring.version}</version>
             </dependency>
 
             <dependency>
@@ -190,6 +198,12 @@
                 <groupId>com.alibaba</groupId>
                 <artifactId>fastjson</artifactId>
                 <version>${fastjson.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.xuxueli</groupId>
+                <artifactId>xxl-job-core</artifactId>
+                <version>${xxl-job.version}</version>
             </dependency>
 
         </dependencies>

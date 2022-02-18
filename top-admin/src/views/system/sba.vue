@@ -1,3 +1,6 @@
+<template>
+  <div>性能监控</div>
+</template>
 <script>
 export default {
   created() {

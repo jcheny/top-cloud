@@ -17,6 +17,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.CollectionUtils;
@@ -41,14 +42,15 @@ public class RoleController implements RoleFegin {
     @GetMapping
     @ApiOperation(value = "查询角色列表", notes = "角色名称查询")
     @ApiImplicitParams({
-            @ApiImplicitParam(value = "角色名称", name = "roleName", paramType = "query", dataType = "string", example = "admin"),
+            @ApiImplicitParam(value = "角色名称", name = "name", paramType = "query", dataType = "string", example = "admin"),
             @ApiImplicitParam(name = "current", value = "当前页数", paramType = "query", dataType = "int", example = "1"),
             @ApiImplicitParam(name = "size", value = "每页条数", paramType = "query", dataType = "int", example = "10")
     })
     @PreAuthorize("hasAuthority('ROLE_QUERY')")
-    public R<List<RoleVo>> list(String roleName) {
+    public R<List<RoleVo>> list(String name,String code) {
         List<Role> rolePage = roleService.list( new LambdaQueryWrapper<Role>()
-                .like(roleName != null,Role::getName, roleName)
+                .like(StringUtils.isNoneBlank(name),Role::getName, name)
+                .like(StringUtils.isNoneBlank(code),Role::getCode,code)
                 .orderByDesc(Role::getCreateTime)
         );
         return R.data(RoleWrapper.build().listVO(rolePage));

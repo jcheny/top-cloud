@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.MimeTypeUtils;
 
 /**
- * @author SENSETIME\xuxuangan
+ * @author CHENYU
  * @version 1.0
  * @date 2021/8/5 下午8:11
  */
@@ -46,8 +46,6 @@ public class SenderService {
     public <T> void deleteRoute(T msg){
         Message<T> message = MessageBuilder.withPayload(msg)
                 .setHeader(MessageHeaders.CONTENT_TYPE, MimeTypeUtils.APPLICATION_JSON)
-//                .setHeader(RocketMQHeaders.TAGS,tags)
-//                .setHeader(RocketMQHeaders.KEYS,keys)
                 .build();
         source.deleteRoute().send(message);
     }

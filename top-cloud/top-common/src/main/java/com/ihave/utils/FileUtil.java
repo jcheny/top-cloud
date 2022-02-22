@@ -1,10 +1,10 @@
 package com.ihave.utils;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.*;
 import java.net.URL;
+import java.util.UUID;
 
 public class FileUtil {
 
@@ -48,4 +48,30 @@ public class FileUtil {
         }
         return file;
     }
+
+    /**
+     * 制作zip文件并加密
+     * @param file 文件
+     * @param password 密码
+     * @return
+     */
+    public static InputStream zip_encryption(MultipartFile file, String password) {
+        try {
+            File fileToFile = ZipUtil.multipartFileToFile(file);
+            String unzipPackage = "/tmp/" + UUID.randomUUID();
+
+            String zipPackage = unzipPackage + "/" + UUID.randomUUID() + ".zip";
+            ZipUtil.unZipFile(fileToFile, unzipPackage, null);
+            ZipUtil.zipFile(unzipPackage, zipPackage, password);
+            File finishZip = new File(zipPackage);
+            FileInputStream fileInputStream = new FileInputStream(finishZip);
+            ZipUtil.delete(new File(unzipPackage));
+            ZipUtil.delete(fileToFile);
+            return fileInputStream;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }

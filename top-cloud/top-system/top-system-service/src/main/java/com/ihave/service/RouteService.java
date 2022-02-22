@@ -10,7 +10,17 @@ import com.ihave.entity.Route;
 */
 public interface RouteService extends IService<Route> {
 
+    /**
+     * 发布路由
+     * @param id 路由id
+     * @return
+     */
     Boolean pushRouter(Long id);
 
+    /**
+     * 下线路由
+     * @param id 路由id
+     * @return
+     */
     Boolean outlineRouter(Long id);
 }

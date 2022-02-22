@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.mail.MessagingException;
+
 @RestController
 @Api(tags = "邮件控制器")
 @RequestMapping("/email")
@@ -19,8 +21,8 @@ public class EmailController {
 
     @GetMapping("/send")
     @ApiOperation(value = "发送邮件")
-    public R<Object> sms(String to, String subject, String content) {
-        emailService.sendEmail(to,subject,content);
+    public R<Object> sms(String to, String subject, String content) throws MessagingException {
+        emailService.sendHtmlEmail(to,subject,content);
         return R.status(true);
     }
 

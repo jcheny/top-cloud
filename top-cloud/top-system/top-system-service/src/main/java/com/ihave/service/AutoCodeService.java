@@ -14,14 +14,14 @@ public interface AutoCodeService extends IService<AutoCode>{
 
     /**
      * 根据id检查数据
-     * @param id
+     * @param id id
      * @return
      */
     Object checkData(Long id);
 
     /**
      * 生成数据
-     * @param id
+     * @param id id
      * @return
      */
     void autoData(Long id);

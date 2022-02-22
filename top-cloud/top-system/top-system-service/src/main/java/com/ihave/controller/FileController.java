@@ -1,6 +1,5 @@
 package com.ihave.controller;
 
-import cn.hutool.core.date.DateUtil;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.model.GeneratePresignedUrlRequest;
 import com.aliyun.oss.model.PutObjectResult;
@@ -11,15 +10,7 @@ import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.profile.IClientProfile;
 import com.aliyuncs.sts.model.v20150401.AssumeRoleRequest;
 import com.aliyuncs.sts.model.v20150401.AssumeRoleResponse;
-import com.baomidou.mybatisplus.extension.exceptions.ApiException;
-import com.ihave.utils.FileUtil;
-import com.mpatric.mp3agic.ID3v2;
-import com.mpatric.mp3agic.InvalidDataException;
-import com.mpatric.mp3agic.Mp3File;
-import com.mpatric.mp3agic.UnsupportedTagException;
 import com.ihave.api.R;
-import com.ihave.utils.RSAUtil;
-import com.ihave.utils.ZipUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -30,7 +21,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.*;
 
@@ -70,67 +62,27 @@ public class FileController {
     private String active;
 
 
-    @ApiOperation(value = "mp3文件信息数据解析")
-    @PostMapping("/mp3")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "file", value = "你要上传的mp3文件")
-    })
-    public R<Object> mp3(@RequestParam(value = "file") String file) throws IOException, UnsupportedTagException {
-        Map<String, Object> map = new HashMap<>();
-        File fileX = FileUtil.downloadFile(file);
-        try {
-            Mp3File mp3file = new Mp3File(fileX);
-            if (mp3file.hasId3v2Tag()) {
-                ID3v2 id3v2Tag = mp3file.getId3v2Tag();
-                map.put("artist", id3v2Tag.getArtist());
-                map.put("album", id3v2Tag.getAlbum());
-                map.put("title", id3v2Tag.getTitle());
-                byte[] albumImageData = id3v2Tag.getAlbumImage();
-                if (albumImageData != null) {
-                    String format = DateUtil.today().replaceAll("-", "/");
-                    String suffer = id3v2Tag.getAlbumImageMimeType().replace("/", ".");
-                    String fileName = format + "/" + UUID.randomUUID().toString().replaceAll("-", "") + suffer;
-                    ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(albumImageData);
-                    ossClient.putObject(bucketName, fileName, byteArrayInputStream);
-                    map.put("url", "https://" + bucketName + "." + endpoint + "/" + fileName);
-                }
-            }
-        } catch (InvalidDataException e) {
-            e.printStackTrace();
-        }
-        fileX.delete();
-        return R.data(map);
-    }
-
-
-
-
     /**
      * 把文件存在阿里云oss
      * ossClient.putObject(bucketName【阿里云上创建的】,文件名，文件）
      *
-     * @param file
-     * @return
-     * @throws IOException
+     * @param file 文件
+     * @param flag 标志（forever，返回的链接为22年可用）
+     * @param dirName 文件夹 （top/当前环境/文件夹名称/文件）
+     * @return url链接、md5值
+     * @throws IOException io异常
      */
     @ApiOperation(value = "上传文件")
     @PostMapping("/aliyun")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "file", value = "你要上传的文件")
+            @ApiImplicitParam(name = "file", value = "你要上传的文件"),
+            @ApiImplicitParam(name = "flag", value = "标志（forever，返回的链接为22年可用）"),
+            @ApiImplicitParam(name = "dirName", value = "文件夹 （top/当前环境/文件夹名称/文件）")
     })
     public R<Object> upload(@RequestParam(value = "file") MultipartFile file, String flag, String dirName) throws Exception {
         Map<String, Object> result = new HashMap<>();
         InputStream inputStream = file.getInputStream();
-        String password = UUID.randomUUID().toString();
-        String rsaPassword = RSAUtil.encryptByPrivateKey(RSAUtil.pri_key, password);
-        result.put("hash", rsaPassword);
         String suffix = Objects.requireNonNull(file.getOriginalFilename()).substring(file.getOriginalFilename().lastIndexOf("."));
-        if (suffix.equalsIgnoreCase(".zip")) {
-            inputStream = zip_encryption(file, password);
-            if (inputStream == null) {
-                throw new ApiException("ZIP error");
-            }
-        }
         String fileName = "top" + "/" + active + "/" + dirName + "/" + UUID.randomUUID().toString().replaceAll("-", "") + suffix;
         PutObjectResult putObjectResult = ossClient.putObject(bucketName, fileName, inputStream);
         String eTag = putObjectResult.getETag();
@@ -148,25 +100,11 @@ public class FileController {
         return R.data(result);
     }
 
-    private InputStream zip_encryption(MultipartFile file, String password) {
-        try {
-            File fileToFile = ZipUtil.multipartFileToFile(file);
-            String unzipPackage = "/tmp/" + UUID.randomUUID();
-
-            String zipPackage = unzipPackage + "/" + UUID.randomUUID() + ".zip";
-            ZipUtil.unZipFile(fileToFile, unzipPackage, null);
-            ZipUtil.zipFile(unzipPackage, zipPackage, password);
-            File finishZip = new File(zipPackage);
-            FileInputStream fileInputStream = new FileInputStream(finishZip);
-            ZipUtil.delete(new File(unzipPackage));
-            ZipUtil.delete(fileToFile);
-            return fileInputStream;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
+    /**
+     *
+     * @param file 文件的url
+     * @return 可用的url链接
+     */
     @ApiOperation(value = "下载文件")
     @GetMapping("/download")
     @ApiImplicitParams({
@@ -188,7 +126,7 @@ public class FileController {
     /**
      * 获取上传的票据
      *
-     * @return
+     * @return sts信息
      */
     @GetMapping("/getPolicy")
     @ApiOperation(value = "获取一个上传的票据")

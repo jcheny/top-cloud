@@ -15,6 +15,12 @@ public interface SMSService {
 
     String regex = "\\{([^}]*)\\}";
 
+    /**
+     *
+     * @param mobile 手机号
+     * @param code 场景code
+     * @throws Exception
+     */
     void send(String mobile, String code) throws Exception;
 
 

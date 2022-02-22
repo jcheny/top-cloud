@@ -85,11 +85,7 @@
             <artifactId>mp3agic</artifactId>
         </dependency>
 
-        <!-- zip工具 -->
-        <dependency>
-            <groupId>net.lingala.zip4j</groupId>
-            <artifactId>zip4j</artifactId>
-        </dependency>
+
     </dependencies>
 
     <build>

@@ -41,10 +41,7 @@ public class AliyunSMSService implements SMSService, InitializingBean {
      * 短信验证码的位数
      */
     private static final int count = 4;
-    /**
-     * 短信redis 的前缀
-     */
-    public static final String MOBILE_REDIS_PREFIX = "STMOBILE_SMS_KEY";
+
     /**
      * redis短信计数 的前缀
      */
@@ -86,7 +83,6 @@ public class AliyunSMSService implements SMSService, InitializingBean {
     @Resource
     private ISmsService smsService;
 
-
     @Autowired
     private ConfigService configService;
 
@@ -102,10 +98,12 @@ public class AliyunSMSService implements SMSService, InitializingBean {
     @Override
     public void send(String mobile, String code){
 
+        //获取短信的签名
         ConfigVo sign = configService.getConfigByKey(TYPE, CODE);
         if(sign == null){
             throw new ApiException("短信签名异常。请联系管理员");
         }
+        //获取code场景的短信模版
         ConfigVo sms = configService.getConfigByKey(TYPE, code);
         if(sms == null){
             throw new ApiException("没有找到当前的短信模板，请联系管理员");
@@ -119,8 +117,9 @@ public class AliyunSMSService implements SMSService, InitializingBean {
         if(Integer.parseInt(String.valueOf(redisTemplate.opsForValue().get(RkRule.build().flagKey( COUNT_REDIS_PREFIX + code,mobile))))<1){
             throw new ApiException("短信已发送已达上限");
         }
-        // 未达到上限，则发送短信
+        // 未达到上限，则发送短信 短信发送的redis中key【RkRule.build().flagKey(code, mobile)】
         redisTemplate.opsForValue().set(RkRule.build().flagKey(code, mobile),random,MINUTE,TIME_UNIT);
+        //设置key+1
         redisTemplate.opsForValue().decrement(RkRule.build().flagKey(COUNT_REDIS_PREFIX + code,mobile));
         log.info("短信验证码为："+ random);
         SendSmsRequest sendSmsRequest = new SendSmsRequest();
